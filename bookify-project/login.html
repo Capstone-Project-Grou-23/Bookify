@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookify - Login</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo"><a href="index.html">📚 Bookify</a></div>
+    <div class="menu">
+      <a href="index.html">Home</a>
+      <a href="#">Explore</a>
+      <a href="#">Pricing</a>
+    </div>
+    <div class="auth">
+      <a href="login.html" class="btn-login-nav">Log In</a>
+      <a href="signup.html" class="btn-join">Join for FREE</a>
+    </div>
+  </div>
+
+  <!-- Login Form -->
+  <div class="form-container">
+    <div class="form-box">
+      <h2>Welcome back!</h2>
+      <p>Log in to your account.</p>
+
+      <form>
+        <label for="email">Username or email</label>
+        <input type="email" id="email" placeholder="example@example.com" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Password" required>
+
+        <a href="#" class="forgot">Forgot your password?</a>
+
+        <button type="submit" class="form-btn">Log In</button>
+      </form>
+
+      <div class="or">— Or —</div>
+
+      <button class="social-btn">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google"> Continue with Google
+      </button>
+      <button class="social-btn">
+        <img src="https://www.svgrepo.com/show/452196/facebook-1.svg" alt="Facebook"> Continue with Facebook
+      </button>
+
+      <div class="bottom-link">
+        Don’t have an account? <a href="signup.html">Sign up</a>
+      </div>
+    </div>
+  </div>
+  <script src="js/main.js"></script>
+</body>
+</html>
