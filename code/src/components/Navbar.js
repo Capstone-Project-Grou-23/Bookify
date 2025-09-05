@@ -6,7 +6,7 @@ function Navbar() {
     <div className="navbar">
       <div className="logo">
         <a href="/" style={{ color: "white", textDecoration: "none" }}>
-          📚 Bookify
+          📚 Bookify Project
         </a>
       </div>
       <div className="menu">
