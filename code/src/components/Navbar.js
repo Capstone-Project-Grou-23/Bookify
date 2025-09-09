@@ -1,25 +1,64 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
-function Navbar() {
+const Navbar = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
+  }, []);
+
   return (
     <div className="navbar">
       <div className="logo">
-        <a href="/" style={{ color: "white", textDecoration: "none" }}>
-          📚 Bookify Project
-        </a>
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/29/29302.png"
+          alt="logo"
+        />
+        <a href="/" className="logo-text">Bookify</a>
       </div>
-      <div className="menu">
-        <a href="/">Home</a>
-        <a href="#">Explore</a>
-        <a href="#">Pricing</a>
-      </div>
-      <div className="auth">
+
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="#">Explore</a></li>
+        <li><a href="#">Pricing</a></li>
+      </ul>
+
+      <div className="navbar-right">
+        <i className="fas fa-search icon"></i>
         <a href="/login" className="btn-login">Log In</a>
-        <a href="/signup" className="btn-join">Join for FREE</a>
+
+        <div
+          className={`dropdown ${dropdownOpen ? "show" : ""}`}
+          ref={dropdownRef}
+        >
+          <i
+            className="fas fa-user-circle icon"
+            onClick={toggleDropdown}
+          ></i>
+          <div className="dropdown-content">
+            <a href="/profile">View Profile</a>
+            <a href="#">Manage Account</a>
+            <a href="#">Dark Mode</a>
+            <a href="#">Sound Effects</a>
+            <a href="#">Badges</a>
+            <a href="#">Give Feedback</a>
+            <a href="#">Log Out</a>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default Navbar;
