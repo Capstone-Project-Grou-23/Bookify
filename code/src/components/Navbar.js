@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -25,30 +29,29 @@ const Navbar = () => {
           src="https://cdn-icons-png.flaticon.com/512/29/29302.png"
           alt="logo"
         />
-        <a href="/" className="logo-text">Bookify</a>
+        <Link to="/">Bookify</Link>
       </div>
-
       <ul>
-        <li><a href="/">Home</a></li>
+        <li><Link to="/">Home</Link></li>
         <li><a href="#">Explore</a></li>
         <li><a href="#">Pricing</a></li>
       </ul>
-
       <div className="navbar-right">
-        <i className="fas fa-search icon"></i>
-        <a href="/login" className="btn-login">Log In</a>
+        <FontAwesomeIcon icon={faSearch} className="icon" />
+        <Link to="/login" className="btn-login">Log In</Link>
 
         <div
           className={`dropdown ${dropdownOpen ? "show" : ""}`}
           ref={dropdownRef}
         >
-          <i
-            className="fas fa-user-circle icon"
+          <FontAwesomeIcon
+            icon={faUserCircle}
+            className="icon"
             onClick={toggleDropdown}
-          ></i>
+          />
           <div className="dropdown-content">
-            <a href="/profile">View Profile</a>
-            <a href="#">Manage Account</a>
+            <Link to="/profile">View Profile</Link>
+            <Link to="/settings">Settings</Link>
             <a href="#">Dark Mode</a>
             <a href="#">Sound Effects</a>
             <a href="#">Badges</a>
