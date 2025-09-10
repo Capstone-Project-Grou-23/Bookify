@@ -1,0 +1,43 @@
+.settings-box {
+  background: white;
+  padding: 30px;
+  width: 380px;
+  max-width: 90%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  margin: auto;
+}
+
+.settings-box h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.settings-box p {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.settings-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.settings-options a {
+  display: block;
+  padding: 12px;
+  border-radius: 6px;
+  background: #84cc16;
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.settings-options a:hover {
+  background: #6ea313;
+}
