@@ -1,11 +1,7 @@
 // src/App.js
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Pages
-import Homepage from "./pages/Homepage";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+// Pagess
 
 // Main Setting Page
 import Setting from "./components/setting/Setting";
@@ -22,15 +18,16 @@ import SupportSetting from "./components/setting/setting-options/SupportSetting"
 import Help from "./components/setting/setting-options/support-option/Help";
 import Contact from "./components/setting/setting-options/support-option/Contact";
 import About from "./components/setting/setting-options/support-option/About";
+import Navbar from "./components/homepage/Navbar";
 
 function App() {
   return (
     <Router>
       <Routes>
         {/* Core Pages */}
-        <Route path="/" element={<Homepage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/homepage/" element={<Navbar />} />
+        <Route path="/signup/" element={<login />} />
+        <Route path="/signup/S" element={<ignup />} />
 
         {/* Settings Main */}
         <Route path="/settings" element={<Setting />} />
