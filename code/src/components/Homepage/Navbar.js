@@ -51,12 +51,12 @@ const Navbar = () => {
           />
           <div className="dropdown-content">
             <Link to="/profile">View Profile</Link>
-            <Link to="/settings">Settings</Link>
+            <Link to="/setting">Settings</Link>
             <a href="#">Dark Mode</a>
             <a href="#">Sound Effects</a>
             <a href="#">Badges</a>
             <a href="#">Give Feedback</a>
-            <a href="#">Log Out</a>
+            <Link to="/login">Log Out</Link>
           </div>
         </div>
       </div>
