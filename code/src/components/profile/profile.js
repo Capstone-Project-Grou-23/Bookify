@@ -1,68 +1,140 @@
-import React from "react";
-import { FaUserCircle, FaShoppingCart, FaTags, FaHeart, FaCalendarAlt } from "react-icons/fa";
+import React, { useState } from "react";
+import "./Profile.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBars,
+  faHome,
+  faUser,
+  faShoppingCart,
+  faHeart,
+  faCreditCard,
+  faCog,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
-export default function ProfilePage() {
+function Profile() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
-      <div className="bg-gray-900 text-white flex justify-between items-center px-10 py-3">
-        <div className="text-xl font-bold">
-          <a href="/home" className="no-underline text-white">
-            📚 Bookify
-          </a>
-        </div>
-        <div>
-          <a href="/login" className="px-4 py-2 border border-white rounded mr-2">
-            Log In
-          </a>
-          <a href="/signup" className="px-4 py-2 bg-lime-500 text-black rounded">
-            Join for FREE
-          </a>
-        </div>
+    <div className="profile-page">
+      {/* Toggle Button */}
+      <div className="toggle-btn" onClick={toggleSidebar}>
+        <FontAwesomeIcon icon={faBars} />
       </div>
 
-      {/* Profile Section */}
-      <div className="flex flex-col items-center py-10">
-        {/* Profile Icon */}
-        <FaUserCircle className="text-gray-700" size={120} />
+      {/* Sidebar */}
+      <div className={`sidebar ${!isSidebarOpen ? "collapsed" : ""}`}>
+        <h2>Bookify</h2>
+        <ul>
+          <li>
+            <Link to="/">
+              <FontAwesomeIcon icon={faHome} /> Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/profile">
+              <FontAwesomeIcon icon={faUser} /> Profile
+            </Link>
+          </li>
+          <li>
+            <a href="#">
+              <FontAwesomeIcon icon={faShoppingCart} /> Orders
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <FontAwesomeIcon icon={faHeart} /> Wishlist
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <FontAwesomeIcon icon={faCreditCard} /> Saved Cards
+            </a>
+          </li>
+          <li>
+            <Link to="/setting">
+              <FontAwesomeIcon icon={faCog} /> Settings
+            </Link>
+          </li>
+          <li>
+            <Link to="/login">
+              <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+            </Link>
+          </li>
+        </ul>
+      </div>
 
-        <h2 className="mt-4 text-2xl font-semibold text-gray-800">User Name</h2>
-        <p className="text-gray-500">user@email.com</p>
-
-        {/* Stats Container */}
-        <div className="grid grid-cols-3 gap-6 mt-10 max-w-3xl w-full px-6">
-          <div className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center">
-            <FaShoppingCart className="text-blue-500 mb-2" size={40} />
-            <h3 className="font-semibold">Buys</h3>
-            <p className="text-gray-500">12 Books</p>
+      {/* Main Content */}
+      <div className={`main-content ${!isSidebarOpen ? "expanded" : ""}`}>
+        <div className="profile-header">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+            alt="Profile"
+            className="profile-pic"
+          />
+          <div className="box">
+            <h3>Orders</h3>
+            <p>12</p>
           </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center">
-            <FaTags className="text-green-500 mb-2" size={40} />
-            <h3 className="font-semibold">Sells</h3>
-            <p className="text-gray-500">8 Books</p>
+          <div className="box">
+            <h3>Wishlist</h3>
+            <p>5</p>
           </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6 flex flex-col items-center">
-            <FaHeart className="text-red-500 mb-2" size={40} />
-            <h3 className="font-semibold">Wishlist</h3>
-            <p className="text-gray-500">5 Books</p>
+          <div className="box">
+            <h3>Saved Cards</h3>
+            <p>2</p>
           </div>
         </div>
 
-        {/* Calendar Section */}
-        <div className="mt-10 max-w-3xl w-full px-6">
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center mb-4">
-              <FaCalendarAlt className="text-purple-500 mr-2" size={30} />
-              <h3 className="text-lg font-semibold">Calendar</h3>
+        <div className="username">John Doe</div>
+
+        <div className="recent-orders">
+          <h2>Recent Orders</h2>
+
+          <div className="order-card">
+            <img
+              src="https://covers.openlibrary.org/b/id/8228691-L.jpg"
+              alt="Book"
+            />
+            <div className="order-info">
+              <h3>The Great Gatsby</h3>
+              <p>Author: F. Scott Fitzgerald</p>
+              <p>Status: Delivered</p>
             </div>
-            <p className="text-gray-500">
-              Upcoming events, reminders, or book deadlines will appear here.
-            </p>
+          </div>
+
+          <div className="order-card">
+            <img
+              src="https://covers.openlibrary.org/b/id/10523331-L.jpg"
+              alt="Book"
+            />
+            <div className="order-info">
+              <h3>1984</h3>
+              <p>Author: George Orwell</p>
+              <p>Status: Shipped</p>
+            </div>
+          </div>
+
+          <div className="order-card">
+            <img
+              src="https://covers.openlibrary.org/b/id/7222246-L.jpg"
+              alt="Book"
+            />
+            <div className="order-info">
+              <h3>To Kill a Mockingbird</h3>
+              <p>Author: Harper Lee</p>
+              <p>Status: Processing</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+export default Profile;
