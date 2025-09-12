@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import "./Setting.css";
+import { Link } from "react-router-dom";
 
 // Import your setting option components
-import ProfileSettings from "./setting-options/ProfileSettings";
-import AccountSettings from "./setting-options/AccountSettings";
-import PreferencesSettings from "./setting-options/PreferencesSettings";
-import PrivacySettings from "./setting-options/PrivacySettings";
-import NotificationSettings from "./setting-options/NotificationSettings";
-import SupportSetting from "./setting-options/support-option/Help"; // default support page can be Help
+import ProfileSetting from "./setting-options/ProfileSetting";
+import AccountSetting from "./setting-options/AccountSetting";
+import PreferenceSetting from "./setting-options/PreferenceSetting";
+import PrivacySetting from "./setting-options/PrivacySetting";
+import NotificationSetting from "./setting-options/NotificationSetting";
+import SupportSetting from "./setting-options/SupportSetting";
 
 const Setting = () => {
   const [activePage, setActivePage] = useState("Profile");
@@ -15,19 +16,19 @@ const Setting = () => {
   const renderContent = () => {
     switch (activePage) {
       case "Profile":
-        return <ProfileSettings />;
+        return <ProfileSetting />;
       case "Account":
-        return <AccountSettings />;
+        return <AccountSetting />;
       case "Preferences":
-        return <PreferencesSettings />;
+        return <PreferenceSetting />;
       case "Privacy":
-        return <PrivacySettings />;
+        return <PrivacySetting />;
       case "Notification":
-        return <NotificationSettings />;
+        return <NotificationSetting />;
       case "Support":
         return <SupportSetting />;
       default:
-        return <ProfileSettings />;
+        return <ProfileSetting />;
     }
   };
 
@@ -36,13 +37,13 @@ const Setting = () => {
       {/* Navbar */}
       <div className="navbar">
         <div className="logo">
-          <a href="/homepage" style={{ color: "white", textDecoration: "none" }}>
+          <Link to="/" style={{ color: "white", textDecoration: "none" }}>
             📚 Bookify
-          </a>
+          </Link>
         </div>
         <div className="auth">
-          <a href="/login" className="btn-login">Log In</a>
-          <a href="/signup" className="btn-join">Join for FREE</a>
+          <Link to="/login" className="btn-login">Log In</Link>
+          <Link to="/signup" className="btn-join">Join for FREE</Link>
         </div>
       </div>
 
@@ -104,9 +105,7 @@ const Setting = () => {
         </div>
 
         {/* Content */}
-        <div className="content-frame">
-          {renderContent()}
-        </div>
+        <div className="content-frame">{renderContent()}</div>
       </div>
     </div>
   );
