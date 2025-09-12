@@ -4,18 +4,7 @@ import "./ProfileSetting.css";
 const ProfileSetting = () => {
   return (
     <div>
-      {/* Navbar */}
-      <div className="navbar">
-        <div className="logo">
-          <a href="/homepage" style={{ color: "white", textDecoration: "none" }}>
-            📚 Bookify
-          </a>
-        </div>
-        <div className="auth">
-          <a href="/login" className="btn-login">Log In</a>
-          <a href="/signup" className="btn-join">Join for FREE</a>
-        </div>
-      </div>
+      
 
       {/* Settings Container */}
       <div className="settings-container">
