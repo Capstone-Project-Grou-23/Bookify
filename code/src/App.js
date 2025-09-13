@@ -5,7 +5,7 @@ import Signup from "./components/signup/Signup";
 import Navbar from "./components/homepage/Navbar";
 import Hero from "./components/homepage/Hero";
 import Profile from "./components/profile/Profile";
-import Setting from "./components/setting/Setting"; // ✅ Import Setting
+import Setting from "./components/setting/Setting"; /
 
 function HomePage() {
   return (
