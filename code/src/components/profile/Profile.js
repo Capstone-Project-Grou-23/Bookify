@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Profile.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,6 +15,12 @@ import { Link } from "react-router-dom";
 
 function Profile() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [username, setUsername] = useState("User");
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("username");
+    if (storedName) setUsername(storedName);
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -91,7 +97,8 @@ function Profile() {
           </div>
         </div>
 
-        <div className="username">John Doe</div>
+        {/* Dynamic Username */}
+        <div className="username">{username}</div>
 
         <div className="recent-orders">
           <h2>Recent Orders</h2>
