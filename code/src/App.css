@@ -8,7 +8,7 @@ body {
   color: #111827;
 }
 
-/* --- Navbar Styles (used by HomePage in App.js) --- */
+
 /* Note: These styles are duplicated in login.css and SignupPage.css */
 /* In a larger app, you might move this to a separate Navbar component. */
 .navbar {
