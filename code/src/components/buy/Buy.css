@@ -1,0 +1,31 @@
+.buy-container {
+    padding: 20px;
+}
+
+.filter-container {
+    margin-bottom: 20px;
+}
+
+.book-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.book-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+.book-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.book-card .price {
+    font-weight: bold;
+    color: #0d1b2a;
+}
