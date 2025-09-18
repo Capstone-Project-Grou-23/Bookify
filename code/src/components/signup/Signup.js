@@ -10,52 +10,52 @@ function Signup() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  if (password !== confirm) {
-    setError("Passwords do not match!");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://localhost:5000/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {  // ✅ check HTTP status instead of `data.success`
-      // Save user name for profile
-      localStorage.setItem("username", name);
-
-      // Party popup
-      const popup = document.createElement("div");
-      popup.className = "party-popup";
-      popup.innerHTML = `<h2>🎉 Welcome, ${name}!</h2><p>Your account has been created successfully.</p>`;
-      document.body.appendChild(popup);
-
-      setTimeout(() => popup.classList.add("show"), 100);
-
-      setTimeout(() => {
-        popup.classList.remove("show");
-        setTimeout(() => {
-          popup.remove();
-          navigate("/login");
-        }, 500);
-      }, 3000);
-    } else {
-      setError(data.message || "Something went wrong");
+    if (password !== confirm) {
+      setError("Passwords do not match!");
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    setError("Server error. Try again later.");
-  }
-};
 
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // ✅ check HTTP status instead of `data.success`
+        // Save user name for profile
+        localStorage.setItem("username", name);
+
+        // Party popup
+        const popup = document.createElement("div");
+        popup.className = "party-popup";
+        popup.innerHTML = `<h2>🎉 Welcome, ${name}!</h2><p>Your account has been created successfully.</p>`;
+        document.body.appendChild(popup);
+
+        setTimeout(() => popup.classList.add("show"), 100);
+
+        setTimeout(() => {
+          popup.classList.remove("show");
+          setTimeout(() => {
+            popup.remove();
+            navigate("/login");
+          }, 500);
+        }, 3000);
+      } else {
+        setError(data.message || "Something went wrong");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Server error. Try again later.");
+    }
+  };
 
   return (
     <div>
@@ -72,8 +72,12 @@ const handleSubmit = async (e) => {
           <a href="#">Pricing</a>
         </div>
         <div className="auth">
-          <Link to="/login" className="btn-login">Log In</Link>
-          <Link to="/signup" className="btn-join">Join for FREE</Link>
+          <Link to="/login" className="btn-login">
+            Log In
+          </Link>
+          <Link to="/signup" className="btn-join">
+            Join for FREE
+          </Link>
         </div>
       </div>
 
@@ -126,16 +130,26 @@ const handleSubmit = async (e) => {
               onChange={(e) => setConfirm(e.target.value)}
             />
 
-            <button type="submit" className="login-btn">Sign Up</button>
+            <button type="submit" className="login-btn">
+              Sign Up
+            </button>
           </form>
 
           <div className="or">— Or —</div>
 
           <button className="social-btn">
-            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" /> Continue with Google
+            <img
+              src="https://www.svgrepo.com/show/355037/google.svg"
+              alt="Google"
+            />{" "}
+            Continue with Google
           </button>
           <button className="social-btn">
-            <img src="https://www.svgrepo.com/show/452196/facebook-1.svg" alt="Facebook" /> Continue with Facebook
+            <img
+              src="https://www.svgrepo.com/show/452196/facebook-1.svg"
+              alt="Facebook"
+            />{" "}
+            Continue with Facebook
           </button>
 
           <div className="signup">
