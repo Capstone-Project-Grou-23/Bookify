@@ -5,16 +5,17 @@ import Signup from "./components/signup/Signup";
 import Navbar from "./components/homepage/Navbar";
 import Hero from "./components/homepage/Hero";
 import Profile from "./components/profile/Profile";
-import Setting from "./components/setting/Setting";
-import Buy from "./components/buy/Buy"; // Import Buy component
-import Sell from "./components/sell/Sell"; // Import Sell component
-
+import Setting from "./components/setting/Setting"; 
+import Buy from "./components/buy/Buy";
+import Sell from "./components/sell/Sell";
+import Footer from "./components/homepage/Footer"; // Import Footer
 
 function HomePage() {
   return (
     <div>
       <Navbar />
       <Hero />
+      <Footer /> {/* Add Footer here */}
     </div>
   );
 }
@@ -28,8 +29,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/setting" element={<Setting />} />
-        <Route path="/buy" element={<Buy />} /> {/* ✅ Added Buy route */}
-        <Route path="/sell" element={<Sell />} /> {/* ✅ Added Sell route */}
+        <Route path="/buy" element={<Buy />} />
+        <Route path="/sell" element={<Sell />} />
       </Routes>
     </Router>
   );
