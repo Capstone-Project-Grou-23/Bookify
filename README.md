@@ -1,6 +1,16 @@
 # Bookify
 Capstone Project!!!
 <br>
+<p> Till 17-sept</p>
+<h6> Check the Db schema</h6>
+<p>I have added DB schema in code/db/db.sql 
+<br>
+Check it and update it in your local system (I am currently seraching methods to host the entire DB online)</p>
+<h6>Note</h6>
+<p>I haven't give the secret keys of google and facebook client id in code/server/proecess.env 
+<br> Due to securtiy isseus I didn't upload it on github <br>
+  So didn't cry and beg me if any related error occur <H3>Be Sigma Here and try to solve the Error!!</H3></p>
+
 <p> Till 13-sept</p>
 <h1>To the other team members !!! </h1>
 <p> I have created and connected DB to the login and signup page </p>
