@@ -79,5 +79,25 @@ router.post("/login", (req, res) => {
     });
   });
 });
+// ... (keep existing code for /register and /login)
+
+const passport = require('./passport-config'); // You might need to adjust the path
+
+// Route to start the Google OAuth flow
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Google OAuth callback route
+router.get('/google/callback', 
+  passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:3000/login' }), 
+  (req, res) => {
+    // At this point, req.user contains the authenticated user from the database
+    const user = req.user;
+    const token = jwt.sign({ id: user.id, name: user.name }, JWT_SECRET, { expiresIn: '1h' });
+    
+    // Redirect back to the frontend with the token
+    // The frontend will need a route to handle this and save the token
+    res.redirect(`http://localhost:3000/auth/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({id: user.id, name: user.name, email: user.email}))}`);
+  }
+);
 
 module.exports = router;
