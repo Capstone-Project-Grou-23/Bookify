@@ -1,5 +1,6 @@
 import React from "react";
 import "./Hero.css";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -7,8 +8,8 @@ const Hero = () => {
       <h1>Welcome to Bookify</h1>
       <p>Your modern marketplace for books</p>
       <div className="buttons">
-        <button className="btn-green">BUY</button>
-        <button className="btn-orange">SELL</button>
+        <Link to="/buy" className="btn-green">BUY</Link>
+        <Link to="/sell" className="btn-orange">SELL</Link>
       </div>
     </div>
   );
