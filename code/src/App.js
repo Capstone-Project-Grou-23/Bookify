@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
+import AuthCallback from './components/AuthCallback';
 import Login from "./components/login/Login";
 import Signup from "./components/signup/Signup";
 import Navbar from "./components/homepage/Navbar";
@@ -29,6 +30,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+           <Route path="/auth/callback" element={<AuthCallback />} /> 
           
           {/* Routes with Navbar and Footer */}
           <Route element={<PageLayout />}>
