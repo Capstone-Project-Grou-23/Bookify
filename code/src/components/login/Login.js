@@ -1,8 +1,39 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/");
+      } else {
+        setError(data.message || "Something went wrong");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Server error. Try again later.");
+    }
+  };
+
   return (
     <div>
       {/* Navbar */}
@@ -18,8 +49,12 @@ const Login = () => {
           <a href="#">Pricing</a>
         </div>
         <div className="auth">
-          <Link to="/login" className="btn-login">Log In</Link>
-          <Link to="/signup" className="btn-join">Join for FREE</Link>
+          <Link to="/login" className="btn-login">
+            Log In
+          </Link>
+          <Link to="/signup" className="btn-join">
+            Join for FREE
+          </Link>
         </div>
       </div>
 
@@ -29,25 +64,53 @@ const Login = () => {
           <h2>Welcome back!</h2>
           <p>Log in to your account.</p>
 
-          <form>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <form onSubmit={handleSubmit}>
             <label htmlFor="email">Username or email</label>
-            <input type="email" id="email" placeholder="example@example.com" required />
+            <input
+              type="email"
+              id="email"
+              placeholder="example@example.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" placeholder="Password" required />
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-            <Link to="#" className="forgot">Forgot your password?</Link>
+            <Link to="#" className="forgot">
+              Forgot your password?
+            </Link>
 
-            <button type="submit" className="login-btn">Log In</button>
+            <button type="submit" className="login-btn">
+              Log In
+            </button>
           </form>
 
           <div className="or">— Or —</div>
 
           <button className="social-btn">
-            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" /> Continue with Google
+            <img
+              src="https://www.svgrepo.com/show/355037/google.svg"
+              alt="Google"
+            />{" "}
+            Continue with Google
           </button>
           <button className="social-btn">
-            <img src="https://www.svgrepo.com/show/452196/facebook-1.svg" alt="Facebook" /> Continue with Facebook
+            <img
+              src="https://www.svgrepo.com/show/452196/facebook-1.svg"
+              alt="Facebook"
+            />{" "}
+            Continue with Facebook
           </button>
 
           <div className="signup">
