@@ -1,147 +1,119 @@
 import React, { useState, useEffect } from "react";
 import "./Profile.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBars,
-  faHome,
-  faUser,
-  faShoppingCart,
-  faHeart,
-  faCreditCard,
-  faCog,
-  faSignOutAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
 
-function Profile() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [username, setUsername] = useState("User");
+const Profile = () => {
+    const [user, setUser] = useState(null);
+    const [sellerBooks, setSellerBooks] = useState([]);
+    const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState({ name: '', bio: '', profile_picture: '' });
 
-  useEffect(() => {
-    const storedName = localStorage.getItem("username");
-    if (storedName) setUsername(storedName);
-  }, []);
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const userData = JSON.parse(localStorage.getItem('user'));
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+        if (token && userData) {
+            fetchUserProfile(userData.id, token);
+            fetchSellerBooks(userData.id, token);
+        }
+    }, []);
 
-  return (
-    <div className="profile-page">
-      {/* Toggle Button */}
-      <div className="toggle-btn" onClick={toggleSidebar}>
-        <FontAwesomeIcon icon={faBars} />
-      </div>
+    const fetchUserProfile = (userId, token) => {
+        fetch(`http://localhost:5000/api/users/${userId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(!data.error) {
+                setUser(data);
+                setFormData({ name: data.name, bio: data.bio || '', profile_picture: data.profile_picture || '' });
+            }
+        })
+        .catch(console.error);
+    };
 
-      {/* Sidebar */}
-      <div className={`sidebar ${!isSidebarOpen ? "collapsed" : ""}`}>
-        <h2>Bookify</h2>
-        <ul>
-          <li>
-            <Link to="/">
-              <FontAwesomeIcon icon={faHome} /> Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/profile">
-              <FontAwesomeIcon icon={faUser} /> Profile
-            </Link>
-          </li>
-          <li>
-            <a href="#">
-              <FontAwesomeIcon icon={faShoppingCart} /> Orders
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <FontAwesomeIcon icon={faHeart} /> Wishlist
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <FontAwesomeIcon icon={faCreditCard} /> Saved Cards
-            </a>
-          </li>
-          <li>
-            <Link to="/setting">
-              <FontAwesomeIcon icon={faCog} /> Settings
-            </Link>
-          </li>
-          <li>
-            <Link to="/login">
-              <FontAwesomeIcon icon={faSignOutAlt} /> Logout
-            </Link>
-          </li>
-        </ul>
-      </div>
+    const fetchSellerBooks = (sellerId, token) => {
+        fetch(`http://localhost:5000/api/books?seller_id=${sellerId}`, {
+             headers: { 'Authorization': `Bearer ${token}` }
+        })
+       .then(res => res.json())
+       .then(data => {
+           if(!data.error) setSellerBooks(data);
+        })
+       .catch(console.error);
+    };
+    
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
 
-      {/* Main Content */}
-      <div className={`main-content ${!isSidebarOpen ? "expanded" : ""}`}>
-        <div className="profile-header">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
-            alt="Profile"
-            className="profile-pic"
-          />
-          <div className="box">
-            <h3>Orders</h3>
-            <p>12</p>
-          </div>
-          <div className="box">
-            <h3>Wishlist</h3>
-            <p>5</p>
-          </div>
-          <div className="box">
-            <h3>Saved Cards</h3>
-            <p>2</p>
-          </div>
+    const handleSave = () => {
+        const token = localStorage.getItem('token');
+        fetch(`http://localhost:5000/api/users/${user.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                setUser(prev => ({...prev, ...formData}));
+                setIsEditing(false);
+            }
+        })
+        .catch(console.error);
+    };
+
+    if (!user) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div className="profile-container">
+            <div className="profile-header">
+                <img src={formData.profile_picture} alt="Profile" className="profile-pic" />
+                <div className="profile-info">
+                    {isEditing ? (
+                        <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="profile-name-input"/>
+                    ) : (
+                        <h1>{user.name}</h1>
+                    )}
+                    <p>{user.email}</p>
+                    {isEditing ? (
+                        <textarea name="bio" value={formData.bio} onChange={handleInputChange} className="profile-bio-input"></textarea>
+                    ) : (
+                        <p className="profile-bio">{user.bio || "No bio yet."}</p>
+                    )}
+                     {isEditing && (
+                        <input type="text" name="profile_picture" value={formData.profile_picture} onChange={handleInputChange} placeholder="Image URL" className="profile-pic-input"/>
+                    )}
+                </div>
+                {isEditing ? (
+                    <button className="profile-action-btn" onClick={handleSave}>Save</button>
+                ) : (
+                    <button className="profile-action-btn" onClick={() => setIsEditing(true)}>Edit Profile</button>
+                )}
+            </div>
+            
+            <div className="profile-tabs">
+                <div className="tab-content">
+                    <h2>Your Listings</h2>
+                    <div className="book-list">
+                        {sellerBooks.length > 0 ? sellerBooks.map(book => (
+                            <div className="book-card" key={book.id}>
+                                <img src={book.image_url} alt={book.title} />
+                                <h3>{book.title}</h3>
+                                <p>${book.price}</p>
+                            </div>
+                        )) : <p>You haven't listed any books yet.</p>}
+                    </div>
+                </div>
+            </div>
         </div>
-
-        {/* Dynamic Username */}
-        <div className="username">{username}</div>
-
-        <div className="recent-orders">
-          <h2>Recent Orders</h2>
-
-          <div className="order-card">
-            <img
-              src="https://covers.openlibrary.org/b/id/8228691-L.jpg"
-              alt="Book"
-            />
-            <div className="order-info">
-              <h3>The Great Gatsby</h3>
-              <p>Author: F. Scott Fitzgerald</p>
-              <p>Status: Delivered</p>
-            </div>
-          </div>
-
-          <div className="order-card">
-            <img
-              src="https://covers.openlibrary.org/b/id/10523331-L.jpg"
-              alt="Book"
-            />
-            <div className="order-info">
-              <h3>1984</h3>
-              <p>Author: George Orwell</p>
-              <p>Status: Shipped</p>
-            </div>
-          </div>
-
-          <div className="order-card">
-            <img
-              src="https://covers.openlibrary.org/b/id/7222246-L.jpg"
-              alt="Book"
-            />
-            <div className="order-info">
-              <h3>To Kill a Mockingbird</h3>
-              <p>Author: Harper Lee</p>
-              <p>Status: Processing</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
 
 export default Profile;
