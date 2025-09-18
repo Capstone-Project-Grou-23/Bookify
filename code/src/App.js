@@ -5,7 +5,10 @@ import Signup from "./components/signup/Signup";
 import Navbar from "./components/homepage/Navbar";
 import Hero from "./components/homepage/Hero";
 import Profile from "./components/profile/Profile";
-import Setting from "./components/setting/Setting"; 
+import Setting from "./components/setting/Setting";
+import Buy from "./components/buy/Buy"; // Import Buy component
+import Sell from "./components/sell/Sell"; // Import Sell component
+
 
 function HomePage() {
   return (
@@ -24,7 +27,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/setting" element={<Setting />} /> {/* ✅ Added Settings route */}
+        <Route path="/setting" element={<Setting />} />
+        <Route path="/buy" element={<Buy />} /> {/* ✅ Added Buy route */}
+        <Route path="/sell" element={<Sell />} /> {/* ✅ Added Sell route */}
       </Routes>
     </Router>
   );
