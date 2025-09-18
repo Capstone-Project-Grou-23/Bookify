@@ -80,6 +80,40 @@ app.post("/login", (req, res) => {
   });
 });
 
+// Get all books
+app.get('/books', (req, res) => {
+  db.query('SELECT b.*, c.name as category_name FROM books b JOIN categories c ON b.category_id = c.id', (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err });
+    }
+    res.json(results);
+  });
+});
+
+// Get all categories
+app.get('/categories', (req, res) => {
+    db.query('SELECT * FROM categories', (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err });
+        }
+        res.json(results);
+    });
+});
+
+
+// Add a new book
+app.post('/books', (req, res) => {
+  const { title, author, price, description, image_url, category_id, seller_id } = req.body;
+  const newBook = { title, author, price, description, image_url, category_id, seller_id };
+  db.query('INSERT INTO books SET ?', newBook, (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: err });
+    }
+    res.status(201).json({ message: 'Book created successfully', bookId: result.insertId });
+  });
+});
+
+
 // ✅ Run server
 app.listen(5000, () => {
   console.log("Server running on port 5000");
