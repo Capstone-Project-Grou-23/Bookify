@@ -33,8 +33,8 @@ const Navbar = () => {
       </div>
       <ul>
         <li><Link to="/">Home</Link></li>
-        <li><a href="#">Explore</a></li>
-        <li><a href="#">Pricing</a></li>
+        <li><Link to="/buy">Buy</Link></li> {/* ✅ Link to Buy page */}
+        <li><Link to="/sell">Sell</Link></li> {/* ✅ Link to Sell page */}
       </ul>
       <div className="navbar-right">
         <FontAwesomeIcon icon={faSearch} className="icon" />
