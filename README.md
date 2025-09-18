@@ -7,9 +7,11 @@ Capstone Project!!!
 <br>
 Check it and update it in your local system (I am currently seraching methods to host the entire DB online)</p>
 <h6>Note</h6>
+
 <p>I haven't give the secret keys of google and facebook client id in code/server/proecess.env 
-<br> Due to securtiy isseus I didn't upload it on github <br>
-  So didn't cry and beg me if any related error occur <H2>Be Sigma Here and try to solve the Error!! 🗿</H2></p>
+<br> Due to securtiy isseus I didn't upload it on github (If needed ask politly)<br>
+  So didn't cry and beg me if any related error occur 
+  <H2>Be Sigma Here and try to solve the Error!! 🗿</H2></p>
 
 <p> Till 13-sept</p>
 <h1>To the other team members !!! </h1>
