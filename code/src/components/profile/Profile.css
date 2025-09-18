@@ -1,181 +1,93 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f5f7fa;
-  color: #333;
+.profile-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-/* Layout */
-.profile-page {
-  display: flex;
-  transition: margin-left 0.3s ease;
-}
-
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 250px;
-  height: 100vh;
-  background-color: #0d1b2a;
-  color: #fff;
-  padding: 20px;
-  box-sizing: border-box;
-  transition: transform 0.3s ease;
-  transform: translateX(0);
-  overflow-x: hidden;
-  z-index: 1000;
-}
-
-.sidebar.collapsed {
-  transform: translateX(-100%);
-}
-
-.sidebar h2 {
-  font-size: 22px;
-  margin: 0 0 30px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar ul li {
-  margin: 20px 0;
-}
-
-.sidebar ul li a {
-  text-decoration: none;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  font-size: 16px;
-  white-space: nowrap;
-}
-
-.sidebar ul li a:hover {
-  color: #8bc34a;
-}
-
-/* Toggle Button */
-.toggle-btn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  background: #0d1b2a;
-  color: white;
-  padding: 10px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  z-index: 1101;
-}
-
-/* Main content */
-.main-content {
-  flex: 1;
-  padding: 30px;
-  margin-left: 250px;
-  transition: margin-left 0.3s ease;
-  width: 100%;
-}
-
-.main-content.expanded {
-  margin-left: 0;
-}
-
-/* Profile header */
 .profile-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 40px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
 }
 
-.profile-header .profile-pic {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #fff;
-  box-shadow: 0 0 0 4px #8bc34a;
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 30px;
+    border: 4px solid #8bc34a;
 }
 
-.profile-header .box {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 120px;
+.profile-info h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #0d1b2a;
 }
 
-.profile-header .box h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #0d1b2a;
+.profile-info p {
+    margin: 5px 0;
+    color: #555;
 }
 
-.profile-header .box p {
-  margin: 5px 0 0;
-  font-size: 14px;
-  color: #555;
+.profile-bio {
+    font-style: italic;
 }
 
-.username {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 22px;
-  font-weight: bold;
-  color: #0d1b2a;
+.profile-action-btn {
+    margin-left: auto;
+    background-color: #ff5722;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-/* Recent orders */
-.recent-orders h2 {
-  margin-bottom: 20px;
-  color: #0d1b2a;
+.profile-action-btn:hover {
+    background-color: #e64a19;
 }
 
-.order-card {
-  display: flex;
-  align-items: center;
-  background: #84cc16;
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: 0.3s;
+/* Edit mode styles */
+.profile-name-input, .profile-bio-input, .profile-pic-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+.profile-bio-input {
+    min-height: 80px;
+    resize: vertical;
 }
 
-.order-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+.profile-tabs {
+    margin-top: 20px;
 }
 
-.order-card img {
-  width: 80px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-right: 20px;
+.book-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
 }
 
-.order-info h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #0d1b2a;
+.book-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
 }
 
-.order-info p {
-  margin: 5px 0;
-  color: #555;
-  font-size: 14px;
+.book-card img {
+    max-width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 4px;
 }
