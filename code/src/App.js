@@ -6,11 +6,15 @@ import Navbar from "./components/homepage/Navbar";
 import Hero from "./components/homepage/Hero";
 import Profile from "./components/profile/Profile";
 import Setting from "./components/setting/Setting"; 
+import ListingPage from "./components/listing/ListingPage";
 
 function HomePage() {
   return (
     <div>
       <Navbar />
+     <Routes>
+        <Route path="/listing" element={<ListingPage />} />
+      </Routes>
       <Hero />
     </div>
   );
