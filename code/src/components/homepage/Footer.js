@@ -19,7 +19,7 @@ const Footer = () => {
           </h2>
           <p>
             Bookify is your modern marketplace for buying and selling new and
-            used books. Discover your next favorite read today!!!
+            used books. Discover your next favorite read today!
           </p>
           <div className="contact">
             <span>
