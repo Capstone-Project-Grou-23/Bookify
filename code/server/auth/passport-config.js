@@ -1,161 +1,58 @@
-require('dotenv').config();
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const mysql = require('mysql2');
+// const jwt = require('jsonwebtoken'); // Not needed in this file
 
-const express = require("express");
-// Note: You require passport from its config file here, but initialize the actual passport module later
-const passportConfig = require('./auth/passport-config'); // Renamed variable for clarity
-const passport = require('passport'); // <<<--- Add this line to require the actual passport module
-const mysql = require("mysql2");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const authRoutes = require("./auth/auth");
-const verifyToken = require("./auth/verifyToken");
-
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
-
-app.use(passport.initialize()); // <<<--- MOVED THIS LINE HERE
-
-// MySQL Database Connection
+// Create a database connection specifically for passport operations
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "bookify"
+  host: "localhost", user: "root", password: "root", database: "bookify"
 });
 
+// Optional: Log connection errors for this specific connection
 db.connect(err => {
-  if (err) {
-    console.error("Error connecting to MySQL:", err);
-    return;
+    if (err) console.error("[passport-config] Error connecting to MySQL:", err);
+    // else console.log("[passport-config] MySQL Connected..."); // Optional success log
+});
+
+// const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure"; // Not needed here
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/api/auth/google/callback" // Relative path on your server
+  },
+  (accessToken, refreshToken, profile, done) => {
+    const email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
+    const name = profile.displayName;
+
+    if (!email) {
+      return done(new Error("Email not provided by Google"), null);
+    }
+
+    db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+      if (err) { return done(err); }
+
+      if (results.length > 0) {
+        return done(null, results[0]); // User exists
+      } else {
+        // Create new user
+        const newUser = { name, email, password: 'google_auth_user' };
+        db.query('INSERT INTO users SET ?', newUser, (err, result) => {
+          if (err) { return done(err); }
+          newUser.id = result.insertId;
+
+          // Create default settings for the new user
+          const settingsQuery = "INSERT INTO user_settings (user_id) VALUES (?) ON DUPLICATE KEY UPDATE user_id=user_id";
+          db.query(settingsQuery, [newUser.id], (settingsErr) => {
+             if (settingsErr) {
+                console.error("Could not create default settings for Google user:", settingsErr);
+             }
+              return done(null, newUser); // Pass the new user even if settings fail
+          });
+        });
+      }
+    });
   }
-  console.log("✅ MySQL Connected...");
-});
+));
 
-// Authentication routes - Passport is now initialized before these run
-app.use("/api/auth", authRoutes);
-
-// --- PROTECTED ROUTES ---
-// All routes below this middleware will require a valid JWT
-
-// Get user profile
-app.get("/api/users/:id", verifyToken, (req, res) => {
-    const userId = req.params.id;
-    // Ensure the token user matches the requested user ID
-    // Note: Ensure req.user exists and has an id property after verifyToken runs
-    if (!req.user || req.user.id !== parseInt(userId)) {
-        return res.status(403).json({ message: "Forbidden: You can only access your own profile." });
-    }
-
-    const userQuery = "SELECT id, name, email, profile_picture, bio FROM users WHERE id = ?";
-    db.query(userQuery, [userId], (err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (results.length === 0) return res.status(404).json({ message: "User not found" });
-        res.json(results[0]);
-    });
-});
-
-// Update user profile
-app.put("/api/users/:id", verifyToken, (req, res) => {
-    const userId = req.params.id;
-     // Note: Ensure req.user exists and has an id property after verifyToken runs
-    if (!req.user || req.user.id !== parseInt(userId)) {
-        return res.status(403).json({ message: "Forbidden" });
-    }
-
-    const { name, bio, profile_picture } = req.body;
-    const updateUserQuery = "UPDATE users SET name = ?, bio = ?, profile_picture = ? WHERE id = ?";
-    db.query(updateUserQuery, [name, bio, profile_picture, userId], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true, message: "Profile updated successfully" });
-    });
-});
-
-// Get user settings
-app.get("/api/users/:id/settings", verifyToken, (req, res) => {
-    const userId = req.params.id;
-     // Note: Ensure req.user exists and has an id property after verifyToken runs
-    if (!req.user || req.user.id !== parseInt(userId)) {
-        return res.status(403).json({ message: "Forbidden" });
-    }
-
-    const settingsQuery = "SELECT * FROM user_settings WHERE user_id = ?";
-    db.query(settingsQuery, [userId], (err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (results.length === 0) {
-             // If no settings, create default ones
-            const defaultSettings = { user_id: userId, theme: 'light', newsletter_subscribed: true, promotional_emails: false, activity_alerts: true };
-            const insertQuery = "INSERT INTO user_settings SET ?";
-            db.query(insertQuery, defaultSettings, (insertErr, insertResult) => {
-                if(insertErr) return res.status(500).json({ error: insertErr.message });
-                res.json(defaultSettings);
-            });
-        } else {
-            res.json(results[0]);
-        }
-    });
-});
-
-// Update user settings
-app.put("/api/users/:id/settings", verifyToken, (req, res) => {
-    const userId = req.params.id;
-     // Note: Ensure req.user exists and has an id property after verifyToken runs
-    if (!req.user || req.user.id !== parseInt(userId)) {
-        return res.status(403).json({ message: "Forbidden" });
-    }
-    const { theme, newsletter_subscribed, promotional_emails, activity_alerts } = req.body;
-    const updateSettingsQuery = "UPDATE user_settings SET theme = ?, newsletter_subscribed = ?, promotional_emails = ?, activity_alerts = ? WHERE user_id = ?";
-    db.query(updateSettingsQuery, [theme, newsletter_subscribed, promotional_emails, activity_alerts, userId], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true, message: "Settings updated successfully" });
-    });
-});
-
-
-// --- PUBLIC ROUTES ---
-
-// Get all books
-app.get('/api/books', (req, res) => {
-  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b JOIN categories c ON b.category_id = c.id JOIN users u ON b.seller_id = u.id';
-  const params = [];
-  // Note: seller_id might not always be present, consider adding error handling or default behavior
-  if (req.query.seller_id) {
-    sql += ' WHERE b.seller_id = ?';
-    params.push(req.query.seller_id);
-  }
-  db.query(sql, params, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(results);
-  });
-});
-
-
-// Get all categories
-app.get('/api/categories', (req, res) => {
-    db.query('SELECT * FROM categories', (err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(results);
-    });
-});
-
-// Add a new book (Protected)
-app.post('/api/books', verifyToken, (req, res) => {
-  const { title, author, price, description, image_url, category_id } = req.body;
-   // Note: Ensure req.user exists and has an id property after verifyToken runs
-  if (!req.user || !req.user.id) {
-    return res.status(403).json({ message: "Forbidden: User ID not found in token." });
-  }
-  const seller_id = req.user.id;
-  const newBook = { title, author, price, description, image_url, category_id, seller_id };
-  db.query('INSERT INTO books SET ?', newBook, (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.status(201).json({ message: 'Book created successfully', bookId: result.insertId });
-  });
-});
-
-
-app.listen(5000, () => {
-  console.log("✅ Server running on port 5000");
-});
-
-// app.use(passport.initialize()); // <<<--- REMOVED FROM HERE
+// module.exports = passport; // Not needed if just running the config
