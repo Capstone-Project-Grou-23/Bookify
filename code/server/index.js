@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require("express");
+const passport = require('./auth/passport-config');
 const mysql = require("mysql2");
 const cors = require("cors");
 const bodyParser = require("body-parser");
