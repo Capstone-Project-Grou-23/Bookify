@@ -2,7 +2,8 @@ const express = require("express");
 const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const passport = require('passport'); // <<<--- Require the main passport module here
+require('./passport-config');
 const router = express.Router();
 
 const db = mysql.createConnection({
