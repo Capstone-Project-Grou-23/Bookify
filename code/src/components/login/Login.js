@@ -98,16 +98,22 @@ const Login = () => {
 
           <div className="or">— Or —</div>
 
-         <a href="http://localhost:5000/api/auth/google" className="social-btn" style={{ textDecoration: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-  <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" /> Continue with Google
-</a>
-          <button className="social-btn">
+          <a
+            href="http://localhost:5000/api/auth/google"
+            className="social-btn"
+            style={{
+              textDecoration: "none",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <img
-              src="https://www.svgrepo.com/show/452196/facebook-1.svg"
-              alt="Facebook"
+              src="https://www.svgrepo.com/show/355037/google.svg"
+              alt="Google"
             />{" "}
-            Continue with Facebook
-          </button>
+            Continue with Google
+          </a>
 
           <div className="signup">
             Don’t have an account? <Link to="/signup">Sign up</Link>
