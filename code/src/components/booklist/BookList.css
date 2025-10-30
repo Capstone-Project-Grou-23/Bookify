@@ -1,0 +1,104 @@
+/* Styles for the BookList component */
+.booklist-container {
+    max-width: 1200px;
+    margin: 40px auto; /* Centered layout */
+    padding: 20px;
+    background-color: #f3f4f6; /* Consistent background */
+  }
+  
+  .booklist-container h1 {
+    text-align: center;
+    color: #0d1b2a; /* Dark blue title */
+    margin-bottom: 30px;
+  }
+  
+  .books-grid {
+    display: grid;
+    /* Responsive grid: More columns on wider screens */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px; /* Spacing between cards */
+  }
+  
+  .book-card-item {
+    background-color: #fff; /* White card background */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+    overflow: hidden; /* Ensures image corners are rounded */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .book-card-item:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+  }
+  
+  .book-cover {
+    width: 100%;
+    height: 250px; /* Fixed height for consistency */
+    object-fit: cover; /* Cover ensures image fills space */
+    display: block;
+  }
+  
+  .book-details {
+    padding: 15px;
+    flex-grow: 1; /* Allows details to fill space */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .book-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #111827; /* Dark text */
+    margin: 0 0 5px 0;
+    /* Ellipsis for long titles */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .book-author {
+    font-size: 0.9rem;
+    color: #6b7280; /* Gray text */
+    margin: 0 0 10px 0;
+  }
+  
+  .book-price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #0d1b2a; /* Dark blue price */
+    margin: 0 0 8px 0;
+  }
+  
+  .book-category,
+  .book-seller {
+    font-size: 0.85rem;
+    color: #4b5563; /* Medium gray */
+    margin: 2px 0;
+  }
+  
+  .add-to-cart-btn {
+    background-color: #8bc34a; /* Green button */
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: auto; /* Pushes button to the bottom */
+    transition: background-color 0.3s;
+  }
+  
+  .add-to-cart-btn:hover {
+    background-color: #76a828; /* Darker green on hover */
+  }
+  
+  /* Loading/Error states */
+  .booklist-container p {
+    text-align: center;
+    color: #555;
+    font-size: 1rem;
+  }
