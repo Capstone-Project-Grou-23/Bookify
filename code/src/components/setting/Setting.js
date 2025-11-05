@@ -34,18 +34,7 @@ const Setting = () => {
 
   return (
     <div className="settings-wrapper">
-      {/* Navbar */}
-      <div className="navbar">
-        <div className="logo">
-          <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-            📚 Bookify
-          </Link>
-        </div>
-        <div className="auth">
-          <Link to="/login" className="btn-login">Log In</Link>
-          <Link to="/signup" className="btn-join">Join for FREE</Link>
-        </div>
-      </div>
+      
 
       {/* Settings Layout */}
       <div className="settings-container">
