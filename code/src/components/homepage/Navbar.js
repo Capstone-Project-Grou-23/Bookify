@@ -51,7 +51,7 @@ const Navbar = () => {
           />
           <div className="dropdown-content">
             <Link to="/profile">View Profile</Link>
-            <Link to="/setting">Settings</Link>
+            <Link to="/settings">Settings</Link>
             <a href="#">Dark Mode</a>
             <a href="#">Sound Effects</a>
             <a href="#">Badges</a>
