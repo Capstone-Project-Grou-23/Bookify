@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "./ThemeContext";
 // Import Components
 import Login from "./components/login/Login";
 import Signup from "./components/signup/Signup";
@@ -13,6 +14,14 @@ import Setting from "./components/setting/Setting";
 // import Buy from "./components/buy/Buy";
 import Sell from "./components/sell/Sell";
 import BookList from "./components/booklist/BookList"; // Import the new BookList component
+import Explore from "./components/explore/Explore";
+import Cart from "./components/cart/Cart";
+import About from "./components/setting/setting-options/support-options/About";
+import Contact from "./components/setting/setting-options/support-options/Contact";
+import Help from "./components/setting/setting-options/support-options/Help";
+import Terms from "./components/terms/Terms";
+import Privacy from "./components/privacy/Privacy";
+import Feedback from "./components/feedback/Feedback";
 
 const AuthCallback = () => {
   const location = useLocation(); // Hook to get current URL info
@@ -59,9 +68,11 @@ const PageLayout = () => (
 );
 
 function App() {
+  const { theme } = useTheme();
   return (
     <Router>
       <div
+      className={theme} // <-- 3. Add the theme class here
         style={{
           display: "flex",
           flexDirection: "column",
@@ -75,15 +86,25 @@ function App() {
           {/* This route uses the inline AuthCallback defined above */}
           <Route path="/auth/callback" element={<AuthCallback />} />
 
-          {/* Main Application Routes - Use the PageLayout */}
-          <Route element={<PageLayout />}>
-            <Route path="/" element={<Hero />} />
-            <Route path="/profile" element={<Profile />} />
+          {/* Main Application Routes - Use
+               the PageLayout */}
+          <Route element={<PageLayout />}> 
+            <Route path="/" element={<Hero />} /> 
+            <Route path="/search" element={<BookList />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/explore" element={<Explore/>} />
+            <Route path="/profile" element={<Profile />} /> 
             {/* Corrected the settings path */}
             <Route path="/settings" element={<Setting />} />
             {/* The /buy route now renders the BookList component */}
             <Route path="/buy" element={<BookList />} />
             <Route path="/sell" element={<Sell />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/feedback" element={<Feedback />} />
             {/* Add other main routes here if needed */}
           </Route>
 
