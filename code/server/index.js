@@ -9,15 +9,18 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const authRoutes = require("./auth/auth");
 const verifyToken = require("./auth/verifyToken");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 require('./auth/passport-config');
-
+const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
 // MySQL Database Connection
-const db = require("./db");
+// Use ../ to go up one directory to find db.js
+const db = require("./db"); 
 
 // Authentication routes
 app.use("/api/auth", authRoutes);
@@ -32,21 +35,41 @@ app.use(passport.session());
 
 // --- PROTECTED ROUTES ---
 // All routes below this middleware will require a valid JWT
+// In code/server/index.js
 
-// Get user profile
-app.get("/api/users/:id", verifyToken, (req, res) => {
-    const userId = req.params.id;
-    // Ensure the token user matches the requested user ID
-    if (req.user.id !== parseInt(userId)) {
-        return res.status(403).json({ message: "Forbidden: You can only access your own profile." });
+// Get all books (with search and seller_id filters)
+app.get('/api/books', (req, res) => {
+  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b JOIN categories c ON b.category_id = c.id JOIN users u ON b.seller_id = u.id';
+  const params = [];
+  const whereClauses = [];
+
+  // Check for seller_id filter
+  if (req.query.seller_id) {
+    whereClauses.push('b.seller_id = ?');
+    params.push(req.query.seller_id);
+  }
+
+  // Check for search filter (NOW ONLY SEARCHING TITLE)
+  if (req.query.search) {
+    // We removed "OR b.author LIKE ?"
+    whereClauses.push('b.title LIKE ?');
+    const searchTerm = `%${req.query.search}%`;
+    // We only push the searchTerm once
+    params.push(searchTerm);
+  }
+
+  // Combine filters if they exist
+  if (whereClauses.length > 0) {
+    sql += ' WHERE ' + whereClauses.join(' AND ');
+  }
+
+  db.query(sql, params, (err, results) => {
+    if (err) {
+      console.error("Error fetching books:", err);
+      return res.status(500).json({ error: err.message });
     }
-    
-    const userQuery = "SELECT id, name, email, profile_picture, bio FROM users WHERE id = ?";
-    db.query(userQuery, [userId], (err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
-        if (results.length === 0) return res.status(404).json({ message: "User not found" });
-        res.json(results[0]);
-    });
+    res.json(results);
+  });
 });
 
 // Update user profile
@@ -107,14 +130,19 @@ app.put("/api/users/:id/settings", verifyToken, (req, res) => {
 
 // Get all books
 app.get('/api/books', (req, res) => {
-  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b JOIN categories c ON b.category_id = c.id JOIN users u ON b.seller_id = u.id';
+  // ✅ Use LEFT JOIN for both categories AND users
+  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b LEFT JOIN categories c ON b.category_id = c.id LEFT JOIN users u ON b.seller_id = u.id';
   const params = [];
   if (req.query.seller_id) {
     sql += ' WHERE b.seller_id = ?';
     params.push(req.query.seller_id);
   }
   db.query(sql, params, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+    if (err) {
+        // Log the error to the console to see what's wrong
+        console.error("Error fetching books:", err);
+        return res.status(500).json({ error: err.message });
+    }
     res.json(results);
   });
 });
@@ -143,4 +171,3 @@ app.post('/api/books', verifyToken, (req, res) => {
 app.listen(5000, () => {
   console.log("✅ Server running on port 5000");
 });
-
