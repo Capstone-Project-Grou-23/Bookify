@@ -1,14 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import './BookList.css'; // Import the CSS file
+import { useLocation } from 'react-router-dom';
+import './BookList.css';
+import { useCart } from '../../context/CartContext'; // 1. ADD THIS IMPORT
+
+// Helper function to get URL query parameters
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 const BookList = () => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { addToCart } = useCart(); // 2. This line (around 18) needs the import
+
+    const query = useQuery();
+    const location = useLocation();
+    const searchTerm = query.get('search'); // Get 'search' from URL (e.g., /search?search=harry)
 
     useEffect(() => {
-        // Fetch books from your API endpoint
-        fetch('http://localhost:5000/api/books') // Using the API endpoint from server/index.js
+        // Build the API URL based on whether a search term exists
+        let apiUrl = 'http://localhost:5000/api/books';
+        if (searchTerm) {
+            // This is the line we fixed to only search titles
+            apiUrl += `?search=${encodeURIComponent(searchTerm)}`;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        fetch(apiUrl)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -24,7 +45,7 @@ const BookList = () => {
                 setError(error.message);
                 setLoading(false);
             });
-    }, []); // Empty dependency array means this runs once on mount
+    }, [searchTerm, location.pathname]); // Re-run this effect if the search term or path changes
 
     if (loading) {
         return <div className="booklist-container"><p>Loading books...</p></div>;
@@ -36,7 +57,9 @@ const BookList = () => {
 
     return (
         <div className="booklist-container">
-            <h1>Available Books</h1>
+            {/* Show a dynamic title */}
+            <h1>{searchTerm ? `Results for "${searchTerm}"` : 'Available Books'}</h1>
+            
             {books.length > 0 ? (
                 <div className="books-grid">
                     {books.map(book => (
@@ -48,13 +71,17 @@ const BookList = () => {
                                 <p className="book-price">${book.price ? parseFloat(book.price).toFixed(2) : 'N/A'}</p>
                                 <p className="book-category">Category: {book.category_name || 'Uncategorized'}</p>
                                 <p className="book-seller">Seller: {book.seller_name || 'Unknown'}</p>
-                                <button className="add-to-cart-btn">Add to Cart</button>
+                                {/* 3. Add onClick event */}
+                                <button className="add-to-cart-btn" onClick={() => addToCart(book)}>
+                                  Add to Cart
+                                </button>
                             </div>
                         </div>
                     ))}
                 </div>
             ) : (
-                <p>No books currently available.</p>
+                // Show a helpful message if no books are found
+                <p>{searchTerm ? 'No books found matching your search.' : 'No books currently available.'}</p>
             )}
         </div>
     );
