@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Sell.css';
+import { Link } from 'react-router-dom'; // Import Link
 
 const Sell = () => {
     const [title, setTitle] = useState('');
@@ -11,27 +12,52 @@ const Sell = () => {
     const [categories, setCategories] = useState([]);
     const [sellerBooks, setSellerBooks] = useState([]);
     const [message, setMessage] = useState('');
+    
+    // Get the user from local storage to find the seller_id
+    const user = JSON.parse(localStorage.getItem('user'));
+    const sellerId = user ? user.id : null;
+    const token = localStorage.getItem('token'); // Get the token
 
     useEffect(() => {
-        fetch('http://localhost:5000/categories')
+        // Fetch categories - This is a public route, no token needed
+        fetch('http://localhost:5000/api/categories') // ✅ Corrected path
             .then(response => response.json())
             .then(data => setCategories(data))
             .catch(error => console.error('Error fetching categories:', error));
 
-        // Assuming seller_id is 1 for now
-        fetchBooks(1);
-    }, []);
+        // Fetch the seller's books if they are logged in
+        if (sellerId) {
+            fetchBooks(sellerId);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sellerId]); // Re-run if sellerId changes
 
-    const fetchBooks = (sellerId) => {
-        fetch(`http://localhost:5000/books?seller_id=${sellerId}`)
-            .then(response => response.json())
-            .then(data => setSellerBooks(data))
-            .catch(error => console.error('Error fetching seller books:', error));
+    const fetchBooks = (currentSellerId) => {
+        if (!token) return; // Don't fetch if no token
+        
+        // This endpoint requires authentication
+        fetch(`http://localhost:5000/api/books?seller_id=${currentSellerId}`, { // ✅ Corrected path
+             headers: {
+                // ✅ Add Authorization header
+                'Authorization': `Bearer ${token}` 
+             }
+        })
+       .then(res => res.json())
+       .then(data => {
+           if(!data.error) setSellerBooks(data);
+        })
+       .catch(error => console.error('Error fetching seller books:', error));
     }
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!token) { // Check for token
+            setMessage('You must be logged in to sell a book.');
+            return;
+        }
+
         const newBook = {
             title,
             author,
@@ -39,13 +65,19 @@ const Sell = () => {
             description,
             image_url: imageUrl,
             category_id: categoryId,
-            seller_id: 1, // hardcoded for now
+            // ❌ Removed hardcoded seller_id: 1
+            // The server will get the seller_id from the token.
         };
 
         try {
-            const response = await fetch('http://localhost:5000/books', {
+            // ✅ Use the correct /api/books endpoint
+            const response = await fetch('http://localhost:5000/api/books', { 
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    // ✅ Add the Authorization header
+                    'Authorization': `Bearer ${token}` 
+                },
                 body: JSON.stringify(newBook),
             });
 
@@ -53,7 +85,9 @@ const Sell = () => {
 
             if (response.ok) {
                 setMessage('Book listed successfully!');
-                fetchBooks(1); // Refresh seller books
+                if (sellerId) {
+                    fetchBooks(sellerId); // Refresh seller books
+                }
                 // Clear form
                 setTitle('');
                 setAuthor('');
@@ -72,10 +106,21 @@ const Sell = () => {
     };
 
     const categorizedBooks = sellerBooks.reduce((acc, book) => {
-        (acc[book.category_name] = acc[book.category_name] || []).push(book);
+        // Handle null or undefined category names
+        const categoryName = book.category_name || 'Uncategorized';
+        (acc[categoryName] = acc[categoryName] || []).push(book);
         return acc;
     }, {});
 
+    // If user is not logged in, show a message
+    if (!sellerId) {
+        return (
+            <div className="sell-container">
+                <h1>Sell a Book</h1>
+                <p>Please <Link to="/login">log in</Link> to sell your books.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="sell-container">
@@ -98,20 +143,24 @@ const Sell = () => {
 
             <div className="seller-listings">
                 <h2>Your Listings</h2>
-                {Object.keys(categorizedBooks).map(categoryName => (
-                    <div key={categoryName} className="category-section">
-                        <h3>{categoryName}</h3>
-                        <div className="book-list">
-                            {categorizedBooks[categoryName].map(book => (
-                                <div className="book-card" key={book.id}>
-                                    <img src={book.image_url} alt={book.title} />
-                                    <h4>{book.title}</h4>
-                                    <p>${book.price}</p>
-                                </div>
-                            ))}
+                {sellerBooks.length === 0 ? (
+                    <p>You have not listed any books yet.</p>
+                ) : (
+                    Object.keys(categorizedBooks).map(categoryName => (
+                        <div key={categoryName} className="category-section">
+                            <h3>{categoryName}</h3>
+                            <div className="book-list">
+                                {categorizedBooks[categoryName].map(book => (
+                                    <div className="book-card" key={book.id}>
+                                        <img src={book.image_url || 'https://via.placeholder.com/150/EEEEEE/808080?text=No+Image'} alt={book.title} />
+                                        <h4>{book.title}</h4>
+                                        <p>${book.price}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                )}
             </div>
         </div>
     );
