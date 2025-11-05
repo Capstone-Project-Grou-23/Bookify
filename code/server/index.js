@@ -1,35 +1,34 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 require('dotenv').config();
 
 const express = require("express");
-const passport = require('./auth/passport-config');
+const passport = require('passport');
 const mysql = require("mysql2");
+const session = require('express-session');
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const authRoutes = require("./auth/auth");
 const verifyToken = require("./auth/verifyToken");
+
+require('./auth/passport-config');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
 // MySQL Database Connection
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "bookify"
-});
-
-db.connect(err => {
-  if (err) {
-    console.error("Error connecting to MySQL:", err);
-    return;
-  }
-  console.log("✅ MySQL Connected...");
-});
+const db = require("./db");
 
 // Authentication routes
 app.use("/api/auth", authRoutes);
+app.use(session({
+    secret: process.env.SESSION_SECRET, // You'll add this to .env
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize()); // "Wakes up" passport
+app.use(passport.session());
 
 // --- PROTECTED ROUTES ---
 // All routes below this middleware will require a valid JWT
@@ -144,4 +143,4 @@ app.post('/api/books', verifyToken, (req, res) => {
 app.listen(5000, () => {
   console.log("✅ Server running on port 5000");
 });
-app.use(passport.initialize());
+
