@@ -7,6 +7,10 @@ const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({ name: '', bio: '', profile_picture: '' });
 
+    // !! IMPORTANT !!
+    // Replace this with your actual Render backend URL
+    const BACKEND_URL = "https://YOUR-BACKEND-URL.onrender.com";
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         const userData = JSON.parse(localStorage.getItem('user'));
@@ -18,7 +22,8 @@ const Profile = () => {
     }, []);
 
     const fetchUserProfile = (userId, token) => {
-        fetch(`http://localhost:5000/api/users/${userId}`, {
+        // Use the public backend URL
+        fetch(`${BACKEND_URL}/api/users/${userId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.json())
@@ -32,7 +37,8 @@ const Profile = () => {
     };
 
     const fetchSellerBooks = (sellerId, token) => {
-        fetch(`http://localhost:5000/api/books?seller_id=${sellerId}`, {
+        // Use the public backend URL
+        fetch(`${BACKEND_URL}/api/books?seller_id=${sellerId}`, {
              headers: { 'Authorization': `Bearer ${token}` }
         })
        .then(res => res.json())
@@ -49,7 +55,8 @@ const Profile = () => {
 
     const handleSave = () => {
         const token = localStorage.getItem('token');
-        fetch(`http://localhost:5000/api/users/${user.id}`, {
+        // Use the public backend URL
+        fetch(`${BACKEND_URL}/api/users/${user.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -68,7 +75,7 @@ const Profile = () => {
     };
 
     if (!user) {
-        return <div>Loading...</div>;
+        return <div>Loading... (Note: You must be logged in to see your profile)</div>;
     }
 
     return (
