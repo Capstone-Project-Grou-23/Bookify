@@ -1,32 +1,103 @@
-import React from 'react';
-import './Explore.css'; // We'll create this CSS file next
+.feedback-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
 
-const Explore = () => {
-  return (
-    <div className="explore-container">
-      <div className="explore-content">
-        <h1>Our Mission</h1>
-        <p className="subtitle">
-          Welcome to Bookify, your modern marketplace for new and used books.
-        </p>
-        
-        <p>
-          Our goal is simple: to create a vibrant community where book lovers can easily and safely <strong>buy</strong> and <strong>sell</strong> books. We believe that every book deserves a new life and that reading should be accessible and sustainable for everyone.
-        </p>
-        
-        <h2>Why Bookify?</h2>
-        <ul>
-          <li><strong>Discover:</strong> Find everything from bestsellers and textbooks to rare gems and hidden treasures from sellers just like you.</li>
-          <li><strong>Sell:</strong> Give your pre-loved books a new home. It's easy to list your books and connect with a community of readers.</li>
-          <li><strong>Connect:</strong> We're more than just a marketplace; we're a community built around a shared passion for reading.</li>
-        </ul>
-        
-        <p>
-          Whether you're looking to declutter your shelves or find your next great read, Bookify is here to help you turn the page.
-        </p>
-      </div>
-    </div>
-  );
-};
+.feedback-box {
+  background: #fff;
+  padding: 30px 40px;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
 
-export default Explore;
+.feedback-box h2 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.feedback-box p {
+  text-align: center;
+  color: #555;
+  font-size: 15px;
+  margin-bottom: 30px;
+}
+
+.feedback-box label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.feedback-box input,
+.feedback-box textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  box-sizing: border-box; /* Ensures padding doesn't break width */
+  font-family: inherit;
+}
+
+.feedback-box textarea {
+  resize: vertical;
+}
+
+.btn-submit {
+  width: 100%;
+  background: #8bc34a;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+  background: #76a828;
+}
+
+.feedback-success {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.feedback-success h2 {
+  color: #8bc34a;
+}
+
+/* Dark Mode */
+.dark .feedback-box {
+  background-color: #374151;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.dark .feedback-box h2 {
+  color: #fff;
+}
+
+.dark .feedback-box p {
+  color: #d1d5db;
+}
+
+.dark .feedback-box label {
+  color: #d1d5db;
+}
+
+.dark .feedback-box input,
+.dark .feedback-box textarea {
+  background-color: #4b5563;
+  border-color: #6b7280;
+  color: #fff;
+}
