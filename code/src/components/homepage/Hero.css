@@ -4,7 +4,7 @@
   max-width: 800px;
   margin: 80px auto;
   border-radius: 12px;
-  background-color: #fff;
+  background-color: #e6e7e2;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
@@ -57,4 +57,19 @@
 
 .btn-orange:hover {
   background-color: #e64a19;
+}
+/* --- New Hero Button Styles --- */
+
+.hero-btn {
+  /* This makes the icon and text sit side-by-side */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px; /* Adds space between icon and text */
+  width: 160px; /* Give them a consistent width */
+  text-decoration: none; /* Remove link underline */
+}
+
+.hero-icon {
+  font-size: 1.2em; /* Makes the icon a bit bigger than the text */
 }
