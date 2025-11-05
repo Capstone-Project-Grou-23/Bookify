@@ -1,50 +1,96 @@
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const mysql = require('mysql2');
-// const jwt = require('jsonwebtoken'); // Not needed in this file
+const express = require("express");
+const mysql = require("mysql2");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const passport = require('passport'); // Require the main passport module
 
-// Create a database connection specifically for passport operations
+// Run the configuration file to set up strategies
+require('./passport-config'); // <<<--- Make sure this line exists and ONLY requires the config
+
+const router = express.Router();
+
 const db = require("../db"); // Use ../ to go up one directory
 
-// const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure"; // Not needed here
+// db.connect(...); // Optional: connect if needed directly in this file, otherwise passport-config handles its own connection
 
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/auth/google/callback" // Relative path on your server
-  },
-  (accessToken, refreshToken, profile, done) => {
-    const email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
-    const name = profile.displayName;
+const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
 
-    if (!email) {
-      return done(new Error("Email not provided by Google"), null);
+// Signup Route (keep existing code)
+// ...
+
+// Login Route (keep existing code)
+// ...
+
+// --- Google OAuth Routes ---
+
+// Route to start the Google OAuth flow
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Google OAuth callback route
+router.get('/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:3000/login' }),
+  (req, res) => {
+    if (!req.user) {
+        console.error("Authentication succeeded but user object is missing.");
+        return res.redirect('http://localhost:3000/login?error=auth_failed');
+    }
+    const user = req.user;
+    const token = jwt.sign({ id: user.id, name: user.name }, JWT_SECRET, { expiresIn: '1h' });
+    res.redirect(`http://localhost:3000/auth/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({id: user.id, name: user.name, email: user.email}))}`);
+  }
+);
+
+// In your auth/auth.js file
+
+router.post('/signup', async (req, res) => {
+    // 1. Get data from body
+    const { name, email, password } = req.body;
+
+    // 2. Simple validation
+    if (!name || !email || !password) {
+        return res.status(400).json({ message: "Please provide name, email, and password" });
     }
 
-    db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
-      if (err) { return done(err); }
+    try {
+        // 3. Check if user already exists
+        const [existingUser] = await db.promise().query(
+            "SELECT email FROM users WHERE email = ?", 
+            [email]
+        );
 
-      if (results.length > 0) {
-        return done(null, results[0]); // User exists
-      } else {
-        // Create new user
-        const newUser = { name, email, password: 'google_auth_user' };
-        db.query('INSERT INTO users SET ?', newUser, (err, result) => {
-          if (err) { return done(err); }
-          newUser.id = result.insertId;
+        if (existingUser.length > 0) {
+            // This is a "client error", not a "server error", but we'll send a clear message
+            return res.status(409).json({ message: "Email already in use" });
+        }
 
-          // Create default settings for the new user
-          const settingsQuery = "INSERT INTO user_settings (user_id) VALUES (?) ON DUPLICATE KEY UPDATE user_id=user_id";
-          db.query(settingsQuery, [newUser.id], (settingsErr) => {
-             if (settingsErr) {
-                console.error("Could not create default settings for Google user:", settingsErr);
-             }
-              return done(null, newUser); // Pass the new user even if settings fail
-          });
-        });
-      }
-    });
-  }
-));
+        // 4. Hash the password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-// module.exports = passport; // Not needed if just running the config
+        // 5. Create the new user
+        const [result] = await db.promise().query(
+            "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+            [name, email, hashedPassword]
+        );
+
+        const newUserId = result.insertId;
+
+        // 6. Create JWT token
+        //    Make sure JWT_SECRET is in your .env file!
+        const token = jwt.sign(
+            { id: newUserId, name: name }, 
+            process.env.JWT_SECRET, // Using process.env is more secure
+            { expiresIn: '1h' }
+        );
+
+        // 7. Send success response
+        res.status(201).json({ token, message: "User created successfully" });
+
+    } catch (error) {
+        // NOW, any error (database, hashing, etc.) will be caught
+        console.error("!!!!!!!! SIGNUP FAILED !!!!!!!!", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+module.exports = router;
