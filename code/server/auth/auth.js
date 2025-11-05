@@ -1,43 +1,50 @@
-const express = require("express");
-const mysql = require("mysql2");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const passport = require('passport'); // Require the main passport module
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const mysql = require('mysql2');
+// const jwt = require('jsonwebtoken'); // Not needed in this file
 
-// Run the configuration file to set up strategies
-require('./passport-config'); // <<<--- Make sure this line exists and ONLY requires the config
-
-const router = express.Router();
-
+// Create a database connection specifically for passport operations
 const db = require("../db"); // Use ../ to go up one directory
 
-// db.connect(...); // Optional: connect if needed directly in this file, otherwise passport-config handles its own connection
+// const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure"; // Not needed here
 
-const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/api/auth/google/callback" // Relative path on your server
+  },
+  (accessToken, refreshToken, profile, done) => {
+    const email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
+    const name = profile.displayName;
 
-// Signup Route (keep existing code)
-// ...
-
-// Login Route (keep existing code)
-// ...
-
-// --- Google OAuth Routes ---
-
-// Route to start the Google OAuth flow
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-// Google OAuth callback route
-router.get('/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:3000/login' }),
-  (req, res) => {
-    if (!req.user) {
-        console.error("Authentication succeeded but user object is missing.");
-        return res.redirect('http://localhost:3000/login?error=auth_failed');
+    if (!email) {
+      return done(new Error("Email not provided by Google"), null);
     }
-    const user = req.user;
-    const token = jwt.sign({ id: user.id, name: user.name }, JWT_SECRET, { expiresIn: '1h' });
-    res.redirect(`http://localhost:3000/auth/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({id: user.id, name: user.name, email: user.email}))}`);
-  }
-);
 
-module.exports = router;
+    db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+      if (err) { return done(err); }
+
+      if (results.length > 0) {
+        return done(null, results[0]); // User exists
+      } else {
+        // Create new user
+        const newUser = { name, email, password: 'google_auth_user' };
+        db.query('INSERT INTO users SET ?', newUser, (err, result) => {
+          if (err) { return done(err); }
+          newUser.id = result.insertId;
+
+          // Create default settings for the new user
+          const settingsQuery = "INSERT INTO user_settings (user_id) VALUES (?) ON DUPLICATE KEY UPDATE user_id=user_id";
+          db.query(settingsQuery, [newUser.id], (settingsErr) => {
+             if (settingsErr) {
+                console.error("Could not create default settings for Google user:", settingsErr);
+             }
+              return done(null, newUser); // Pass the new user even if settings fail
+          });
+        });
+      }
+    });
+  }
+));
+
+// module.exports = passport; // Not needed if just running the config
