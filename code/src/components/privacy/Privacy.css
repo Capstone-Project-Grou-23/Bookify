@@ -1,0 +1,69 @@
+.privacy-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px 40px;
+  background: #fff; /* Light mode default */
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.privacy-content {
+  padding: 10px;
+}
+
+.privacy-content h1 {
+  font-size: 32px;
+  color: #0d1b2a;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.privacy-content .last-updated {
+  text-align: center;
+  font-style: italic;
+  color: #777;
+  margin-bottom: 30px;
+}
+
+.privacy-content h2 {
+  font-size: 22px;
+  color: #0d1b2a;
+  margin-top: 30px;
+  border-bottom: 2px solid #8bc34a; /* Green accent */
+  padding-bottom: 5px;
+}
+
+.privacy-content p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+}
+
+.privacy-content ul {
+  padding-left: 20px;
+}
+
+.privacy-content li {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Dark Mode styles */
+.dark .privacy-container {
+  background-color: #374151;
+  color: #d1d5db;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.dark .privacy-content h1,
+.dark .privacy-content h2 {
+  color: #fff;
+}
+
+.dark .privacy-content p,
+.dark .privacy-content .last-updated,
+.dark .privacy-content li {
+  color: #d1d5db;
+}
