@@ -68,8 +68,8 @@ function Signup() {
         </div>
         <div className="menu">
           <Link to="/">Home</Link>
-          <a href="#">Explore</a>
-          <a href="#">Pricing</a>
+          <li><Link to="/explore">Explore</Link></li>
+          
         </div>
         <div className="auth">
           <Link to="/login" className="btn-login">
