@@ -9,9 +9,7 @@ require('./passport-config'); // <<<--- Make sure this line exists and ONLY requ
 
 const router = express.Router();
 
-const db = mysql.createConnection({
-  host: "localhost", user: "root", password: "root", database: "bookify"
-});
+const db = require("../db"); // Use ../ to go up one directory
 
 // db.connect(...); // Optional: connect if needed directly in this file, otherwise passport-config handles its own connection
 
