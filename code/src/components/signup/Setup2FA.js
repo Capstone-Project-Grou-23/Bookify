@@ -57,7 +57,7 @@ const Setup2FA = () => {
     const handleEnableApp = async () => {
         setError('');
         try {
-            const response = await fetch("http://localhost:5000/api/auth/2fa/generate-app-secret", {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/2fa/generate-app-secret`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userId }),
@@ -80,7 +80,7 @@ const Setup2FA = () => {
         e.preventDefault();
         setError('');
         try {
-            const response = await fetch("http://localhost:5000/api/auth/2fa/verify-app-setup", {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/2fa/verify-app-setup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userId, token: appToken }),
