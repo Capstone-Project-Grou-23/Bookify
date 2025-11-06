@@ -72,6 +72,29 @@ app.get('/api/books', (req, res) => {
   });
 });
 
+// ✅ --- START OF FIX ---
+// GET User Profile
+app.get("/api/users/:id", verifyToken, (req, res) => {
+    const userId = req.params.id;
+
+    // Ensure the logged-in user is only accessing their own profile
+    if (req.user.id !== parseInt(userId)) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+
+    // Select all user data EXCEPT the password
+    const getUserQuery = "SELECT id, name, email, profile_picture, bio, created_at FROM users WHERE id = ?";
+    
+    db.query(getUserQuery, [userId], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (results.length === 0) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json(results[0]); // Send back the user data
+    });
+});
+// ✅ --- END OF FIX ---
+
 // Update user profile
 app.put("/api/users/:id", verifyToken, (req, res) => {
     const userId = req.params.id;
