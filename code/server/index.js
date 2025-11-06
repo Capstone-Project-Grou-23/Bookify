@@ -6,9 +6,9 @@ const passport = require('passport');
 const mysql = require("mysql2");
 const session = require('express-session');
 const cors = require("cors");
-const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app/"; // <-- Your Vercel app's URL
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app/"; // 👈 CHANGE THIS
 app.use(cors({
-  origin: VERCEL_FRONTEND_URL
+  origin: VERCEL_FRONTEND_URL 
 }));
 const bodyParser = require("body-parser");
 const authRoutes = require("./auth/auth");
@@ -19,7 +19,7 @@ const jwt = require("jsonwebtoken");
 require('./auth/passport-config');
 const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
 const app = express();
-app.use(cors());
+//app.use(cors());
 app.use(bodyParser.json());
 
 // MySQL Database Connection
