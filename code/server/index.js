@@ -20,7 +20,7 @@ const app = express();
 
 // 2. SET YOUR VERCEL URL
 // I removed the trailing slash, as it's generally safer
-const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app"; 
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app/"; 
 
 // 3. NOW you can use app.use()
 app.use(cors({
