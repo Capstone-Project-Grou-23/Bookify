@@ -10,7 +10,7 @@ import Footer from "./components/homepage/Footer";
 import Profile from "./components/profile/Profile";
 import Setting from "./components/setting/Setting";
 import Setup2FA from "./components/signup/Setup2FA"; // ✅ NEW: Import Setup2FA
-
+import FakeCheckout from "./components/checkout/FakeCheckout";
 // Remove the old Buy import if it's no longer needed elsewhere
 // import Buy from "./components/buy/Buy";
 import Sell from "./components/sell/Sell";
@@ -87,7 +87,7 @@ function App() {
           <Route path="/setup-2fa" element={<Setup2FA />} /> {/* ✅ NEW: Add Setup2FA route */}
           {/* This route uses the inline AuthCallback defined above */}
           <Route path="/auth/callback" element={<AuthCallback />} />
-
+          <Route path="/checkout" element={<FakeCheckout />} />
           {/* Main Application Routes - Use
                the PageLayout */}
           <Route element={<PageLayout />}> 
