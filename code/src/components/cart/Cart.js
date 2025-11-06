@@ -2,10 +2,15 @@ import React from 'react';
 import { useCart } from '../../context/CartContext';
 import { Link } from 'react-router-dom';
 import './Cart.css';
+// ✅ REMOVED: No longer need these
+// import CheckoutForm from './CheckoutForm'; 
+// import useRazorpay from "react-razorpay";
 
 const Cart = () => {
+  // ✅ REMOVED: No longer need Razorpay hook or state
   const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
-
+  const total = getCartTotal();
+  
   return (
     <div className="cart-container">
       <h1>Your Shopping Cart</h1>
@@ -41,7 +46,7 @@ const Cart = () => {
             <h2>Summary</h2>
             <div className="summary-row">
               <span>Subtotal</span>
-              <span>${getCartTotal()}</span>
+              <span>${total}</span>
             </div>
             <div className="summary-row">
               <span>Shipping</span>
@@ -49,9 +54,14 @@ const Cart = () => {
             </div>
             <div className="summary-total">
               <span>Total</span>
-              <span>${getCartTotal()}</span>
+              <span>${total}</span>
             </div>
-            <button className="btn-checkout">Proceed to Checkout</button>
+            
+            {/* ✅ MODIFIED: Changed this to a Link */}
+            <Link to="/checkout" className="btn-checkout" style={{ textDecoration: 'none', textAlign: 'center' }}>
+              Proceed to Checkout
+            </Link>
+
           </div>
         </div>
       )}
