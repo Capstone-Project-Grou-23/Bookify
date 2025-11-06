@@ -14,7 +14,9 @@ const pool = mysql.createPool({
   port: process.env.DB_PORT || 4000,
   ssl: {
     // Read the ca.pem file
-    ca: fs.readFileSync(path.join(__dirname, "ca.pem"))
+    ca: fs.readFileSync(path.join(__dirname, "ca1.pem")),
+    // Add this line to bypass the certificate verification
+    rejectUnauthorized: false
   },
   waitForConnections: true,
   connectionLimit: 10,
