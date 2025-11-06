@@ -53,8 +53,6 @@ app.get('/api/books', (req, res) => {
 
   // Check for seller_id filter
   if (req.query.seller_id) {
-    // This is a protected action, but the original code had /api/books as public.
-    // For now, we will allow it, but ideally, this specific query should be verified.
     whereClauses.push('b.seller_id = ?');
     params.push(req.query.seller_id);
   }
@@ -144,7 +142,6 @@ app.get("/api/users/:id/settings", verifyToken, (req, res) => {
 app.put("/api/users/:id/settings", verifyToken, (req, res) => {
     const userId = req.params.id;
     if (req.user.id !== parseInt(userId)) {
-        // This is the line that had the error. It is now fixed.
         return res.status(403).json({ message: "Forbidden" });
     }
     const { theme, newsletter_subscribed, promotional_emails, activity_alerts } = req.body;
@@ -166,7 +163,10 @@ app.get('/api/categories', (req, res) => {
 
 // Add a new book (Protected)
 app.post('/api/books', verifyToken, (req, res) => {
-  const { title, author, price, description, image_url, category_id }.req.body;
+  // ✅ --- THIS IS THE FIX ---
+  const { title, author, price, description, image_url, category_id } = req.body;
+  // ✅ -----------------------
+
   const seller_id = req.user.id;
   const newBook = { title, author, price, description, image_url, category_id, seller_id };
   db.query('INSERT INTO books SET ?', newBook, (err, result) => {
