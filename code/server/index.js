@@ -6,7 +6,7 @@ const passport = require('passport');
 const mysql = require("mysql2");
 const session = require('express-session');
 const cors = require("cors");
-const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app/"; // 👈 CHANGE THIS
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app"; // 👈 CHANGE THIS
 app.use(cors({
   origin: VERCEL_FRONTEND_URL 
 }));
