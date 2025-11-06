@@ -1,5 +1,5 @@
 -- Drop tables if they exist to start fresh
-DROP TABLE IF EXISTS `wishlist`, `order_items`, `orders`, `books`, `categories`, `user_settings`, `users`;
+DROP TABLE IF EXISTS `email_otps`, `wishlist`, `order_items`, `orders`, `books`, `categories`, `user_settings`, `users`;
 
 -- Users table with additional profile information
 CREATE TABLE `users` (
@@ -9,8 +9,23 @@ CREATE TABLE `users` (
   `password` VARCHAR(255) NOT NULL,
   `profile_picture` VARCHAR(255) DEFAULT 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png',
   `bio` TEXT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  
+  -- 2FA Columns
+  `two_factor_secret` VARCHAR(255) DEFAULT NULL, -- For authenticator app
+  `two_factor_enabled` BOOLEAN DEFAULT false,
+  `two_factor_method` VARCHAR(10) DEFAULT 'NONE' -- 'NONE', 'APP', 'EMAIL'
 );
+
+-- ✅ NEW: Table for Email OTPs
+CREATE TABLE `email_otps` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL,
+  `otp_code` VARCHAR(10) NOT NULL,
+  `expires_at` TIMESTAMP NOT NULL,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+);
+
 
 -- User settings table
 CREATE TABLE `user_settings` (
