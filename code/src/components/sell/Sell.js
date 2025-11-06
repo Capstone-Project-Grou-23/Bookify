@@ -20,7 +20,7 @@ const Sell = () => {
 
     useEffect(() => {
         // Fetch categories - This is a public route, no token needed
-        fetch('http://localhost:5000/api/categories') // ✅ Corrected path
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/categories`) // ✅ Corrected path
             .then(response => response.json())
             .then(data => setCategories(data))
             .catch(error => console.error('Error fetching categories:', error));
@@ -36,7 +36,7 @@ const Sell = () => {
         if (!token) return; // Don't fetch if no token
         
         // This endpoint requires authentication
-        fetch(`http://localhost:5000/api/books?seller_id=${currentSellerId}`, { // ✅ Corrected path
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/books?seller_id=${currentSellerId}`, { // ✅ Corrected path
              headers: {
                 // ✅ Add Authorization header
                 'Authorization': `Bearer ${token}` 
@@ -71,7 +71,7 @@ const Sell = () => {
 
         try {
             // ✅ Use the correct /api/books endpoint
-            const response = await fetch('http://localhost:5000/api/books', { 
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/books', { 
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
