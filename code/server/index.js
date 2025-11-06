@@ -16,11 +16,10 @@ require('./auth/passport-config');
 const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
 
 // 1. DEFINE 'app' FIRST
-const app = express();
+const app = express(); 
 
-// 2. SET YOUR VERCEL URL
-// I removed the trailing slash, as it's generally safer
-const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app/"; 
+// 2. SET YOUR VERCEL URL (I removed the trailing / as it's safer)
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app"; 
 
 // 3. NOW you can use app.use()
 app.use(cors({
@@ -35,7 +34,7 @@ const db = require("./db");
 // Authentication routes
 app.use("/api/auth", authRoutes);
 app.use(session({
-    secret: process.env.SESSION_SECRET, // You'll add this to .env
+    secret: process.env.SESSION_SECRET, 
     resave: false,
     saveUninitialized: false
 }));
@@ -44,14 +43,11 @@ app.use(passport.initialize()); // "Wakes up" passport
 app.use(passport.session());
 
 // --- PROTECTED ROUTES ---
-// All routes below this middleware will require a valid JWT
-// In code/server/index.js
 
 // Get all books (with search and seller_id filters)
-// NOTE: This route is duplicated below as a public route. You should remove one.
-// I am keeping the one WITH verifyToken for seller-specific searches
-app.get('/api/books', verifyToken, (req, res) => {
-  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b JOIN categories c ON b.category_id = c.id JOIN users u ON b.seller_id = u.id';
+app.get('/api/books', (req, res) => {
+  // Use LEFT JOIN to prevent errors if a category or user is missing
+  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b LEFT JOIN categories c ON b.category_id = c.id LEFT JOIN users u ON b.seller_id = u.id';
   const params = [];
   const whereClauses = [];
 
@@ -63,10 +59,8 @@ app.get('/api/books', verifyToken, (req, res) => {
 
   // Check for search filter (NOW ONLY SEARCHING TITLE)
   if (req.query.search) {
-    // We removed "OR b.author LIKE ?"
     whereClauses.push('b.title LIKE ?');
     const searchTerm = `%${req.query.search}%`;
-    // We only push the searchTerm once
     params.push(searchTerm);
   }
 
@@ -84,7 +78,6 @@ app.get('/api/books', verifyToken, (req, res) => {
   });
 });
 
-// ✅ --- START OF FIX ---
 // GET User Profile
 app.get("/api/users/:id", verifyToken, (req, res) => {
     const userId = req.params.id;
@@ -105,7 +98,6 @@ app.get("/api/users/:id", verifyToken, (req, res) => {
         res.json(results[0]); // Send back the user data
     });
 });
-// ✅ --- END OF FIX ---
 
 // Update user profile
 app.put("/api/users/:id", verifyToken, (req, res) => {
@@ -162,27 +154,6 @@ app.put("/api/users/:id/settings", verifyToken, (req, res) => {
 
 
 // --- PUBLIC ROUTES ---
-
-// Get all books (This route seems redundant, as you have one above. You may want to remove this one)
-/*
-app.get('/api/books', (req, res) => {
-  // ✅ Use LEFT JOIN for both categories AND users
-  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b LEFT JOIN categories c ON b.category_id = c.id LEFT JOIN users u ON b.seller_id = u.id';
-  const params = [];
-  if (req.query.seller_id) {
-    sql += ' WHERE b.seller_id = ?';
-    params.push(req.query.seller_id);
-  }
-  db.query(sql, params, (err, results) => {
-    if (err) {
-        // Log the error to the console to see what's wrong
-        console.error("Error fetching books:", err);
-        return res.status(500).json({ error: err.message });
-    }
-    res.json(results);
-  });
-});
-*/
 
 // Get all categories
 app.get('/api/categories', (req, res) => {
