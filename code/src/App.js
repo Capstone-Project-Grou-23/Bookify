@@ -9,6 +9,7 @@ import Hero from "./components/homepage/Hero";
 import Footer from "./components/homepage/Footer";
 import Profile from "./components/profile/Profile";
 import Setting from "./components/setting/Setting";
+import Setup2FA from "./components/signup/Setup2FA"; // ✅ NEW: Import Setup2FA
 
 // Remove the old Buy import if it's no longer needed elsewhere
 // import Buy from "./components/buy/Buy";
@@ -83,6 +84,7 @@ function App() {
           {/* Auth Routes - Typically don't use the main layout */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/setup-2fa" element={<Setup2FA />} /> {/* ✅ NEW: Add Setup2FA route */}
           {/* This route uses the inline AuthCallback defined above */}
           <Route path="/auth/callback" element={<AuthCallback />} />
 
