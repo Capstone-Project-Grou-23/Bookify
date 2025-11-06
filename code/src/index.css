@@ -5,7 +5,36 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* 1. Default light mode colors */
+  background-color: #f3f4f6;
+  color: #111827;
+  transition: background-color 0.3s, color 0.3s;
 }
+
+/* 2. Dark mode styles */
+.dark body {
+  background-color: #1f2937;
+  color: #d1d5db;
+}
+
+/* 3. Style other components based on the .dark class */
+/* For example, your forms and cards: */
+.dark .login-box,
+.dark .profile-container,
+.dark .book-card-item {
+  background-color: #374151;
+  color: #d1d5db;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.dark .login-box h2,
+.dark .profile-info h1,
+.dark .book-title {
+  color: #fff;
+}
+
+/* Add more dark-mode-specific styles as needed */
 
 
 code {
