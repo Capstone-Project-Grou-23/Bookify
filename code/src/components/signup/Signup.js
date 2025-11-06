@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Signup.css";
+import "../login/Login.css"; // Keep this for the party popup
 
 function Signup() {
   const [name, setName] = useState("");
@@ -29,25 +30,9 @@ function Signup() {
       const data = await response.json();
 
       if (response.ok) {
-        // ✅ check HTTP status instead of `data.success`
-        // Save user name for profile
-        localStorage.setItem("username", name);
-
-        // Party popup
-        const popup = document.createElement("div");
-        popup.className = "party-popup";
-        popup.innerHTML = `<h2>🎉 Welcome, ${name}!</h2><p>Your account has been created successfully.</p>`;
-        document.body.appendChild(popup);
-
-        setTimeout(() => popup.classList.add("show"), 100);
-
-        setTimeout(() => {
-          popup.classList.remove("show");
-          setTimeout(() => {
-            popup.remove();
-            navigate("/login");
-          }, 500);
-        }, 3000);
+        // ✅ NEW: Registration successful, navigate to 2FA setup page
+        // We pass the new userId and email to the next page
+        navigate("/setup-2fa", { state: { userId: data.userId, email: data.email, name: name } });
       } else {
         setError(data.message || "Something went wrong");
       }
@@ -59,7 +44,7 @@ function Signup() {
 
   return (
     <div>
-      {/* Navbar */}
+      {/* Navbar (unchanged) */}
       <div className="navbar">
         <div className="logo">
           <Link to="/" style={{ color: "white", textDecoration: "none" }}>
@@ -136,12 +121,9 @@ function Signup() {
           </form>
 
           <div className="or">— Or —</div>
-
           <a href="http://localhost:5000/api/auth/google" className="social-btn" style={{ textDecoration: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-  <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" /> Continue with Google
-</a>
-          
-
+            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" /> Continue with Google
+          </a>
           <div className="signup">
             Already have an account? <Link to="/login">Log In</Link>
           </div>
