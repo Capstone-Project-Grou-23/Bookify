@@ -1,0 +1,105 @@
+.checkout-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    min-height: 60vh;
+}
+
+.checkout-box {
+    background: #fff;
+    padding: 30px 40px;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.checkout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #0d1b2a;
+}
+.checkout-header h2 {
+    margin: 0;
+}
+
+.checkout-box p {
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 30px;
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+#payment-form label {
+    display: block;
+    margin: 15px 0 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#payment-form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    box-sizing: border-box; /* Ensures padding doesn't break width */
+    font-family: inherit;
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.input-icon input {
+    padding-left: 35px;
+}
+
+.flex-row {
+    display: flex;
+    gap: 15px;
+}
+
+.flex-row > div {
+    flex: 1;
+}
+
+.pay-button {
+  background: #ff5722;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  border-radius: 6px;
+  border: 0;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 25px;
+}
+.pay-button:hover {
+  background-color: #e64a19;
+}
+.pay-button:disabled {
+  background-color: #ccc;
+  cursor: default;
+}
+
+/* Re-use party-popup styles from Login.css */
+/* Make sure Login.css is imported in Signup.js or App.js */
