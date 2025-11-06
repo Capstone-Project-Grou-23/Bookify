@@ -19,7 +19,7 @@ const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
 const app = express(); 
 
 // 2. SET YOUR VERCEL URL (I removed the trailing / as it's safer)
-const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app"; 
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app/"; 
 
 // 3. NOW you can use app.use()
 app.use(cors({
