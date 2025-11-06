@@ -35,7 +35,7 @@ const Setup2FA = () => {
         setEmailSent(false);
         try {
             // ✅ MODIFIED: Call the new 'send' route
-            const response = await fetch("http://localhost:5000/api/auth/2fa/send-email-setup", {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/2fa/send-email-setup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userId, email }),
