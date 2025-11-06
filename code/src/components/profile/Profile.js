@@ -13,7 +13,7 @@ const Profile = () => {
     // ✅ --- START OF FIX ---
     // This URL was pointing to a placeholder.
     // It should point to your local backend.
-    const BACKEND_URL = "http://localhost:5000";
+    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
     // ✅ --- END OF FIX ---
     useEffect(() => {
         const token = localStorage.getItem('token');
