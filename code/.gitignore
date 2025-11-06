@@ -1,0 +1,22 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+/node_modules
+/server/node_modules
+
+# Production build folder
+/build
+
+# Environment variables (DO NOT COMMIT THESE)
+.env
+/server/.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Other
+.DS_Store
+.npm
+*.swp
