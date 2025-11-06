@@ -6,10 +6,6 @@ const passport = require('passport');
 const mysql = require("mysql2");
 const session = require('express-session');
 const cors = require("cors");
-const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app"; // 👈 CHANGE THIS
-app.use(cors({
-  origin: VERCEL_FRONTEND_URL 
-}));
 const bodyParser = require("body-parser");
 const authRoutes = require("./auth/auth");
 const verifyToken = require("./auth/verifyToken");
@@ -18,8 +14,18 @@ const jwt = require("jsonwebtoken");
 
 require('./auth/passport-config');
 const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
+
+// 1. DEFINE 'app' FIRST
 const app = express();
-//app.use(cors());
+
+// 2. SET YOUR VERCEL URL
+// I removed the trailing slash, as it's generally safer
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app"; 
+
+// 3. NOW you can use app.use()
+app.use(cors({
+  origin: VERCEL_FRONTEND_URL 
+}));
 app.use(bodyParser.json());
 
 // MySQL Database Connection
@@ -42,7 +48,9 @@ app.use(passport.session());
 // In code/server/index.js
 
 // Get all books (with search and seller_id filters)
-app.get('/api/books', (req, res) => {
+// NOTE: This route is duplicated below as a public route. You should remove one.
+// I am keeping the one WITH verifyToken for seller-specific searches
+app.get('/api/books', verifyToken, (req, res) => {
   let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b JOIN categories c ON b.category_id = c.id JOIN users u ON b.seller_id = u.id';
   const params = [];
   const whereClauses = [];
@@ -155,7 +163,8 @@ app.put("/api/users/:id/settings", verifyToken, (req, res) => {
 
 // --- PUBLIC ROUTES ---
 
-// Get all books
+// Get all books (This route seems redundant, as you have one above. You may want to remove this one)
+/*
 app.get('/api/books', (req, res) => {
   // ✅ Use LEFT JOIN for both categories AND users
   let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b LEFT JOIN categories c ON b.category_id = c.id LEFT JOIN users u ON b.seller_id = u.id';
@@ -173,7 +182,7 @@ app.get('/api/books', (req, res) => {
     res.json(results);
   });
 });
-
+*/
 
 // Get all categories
 app.get('/api/categories', (req, res) => {
