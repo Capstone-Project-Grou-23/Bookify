@@ -21,7 +21,7 @@ function Signup() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -121,7 +121,7 @@ function Signup() {
           </form>
 
           <div className="or">— Or —</div>
-          <a href="http://localhost:5000/api/auth/google" className="social-btn" style={{ textDecoration: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <a href={`${process.env.REACT_APP_BACKEND_URL}/api/auth/google`} className="social-btn" style={{ textDecoration: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" /> Continue with Google
           </a>
           <div className="signup">
