@@ -20,7 +20,7 @@ const BookList = () => {
 
     useEffect(() => {
         // Build the API URL based on whether a search term exists
-        let apiUrl = 'http://localhost:5000/api/books';
+        let apiUrl = `${process.env.REACT_APP_BACKEND_URL}/api/books`;
         if (searchTerm) {
             // This is the line we fixed to only search titles
             apiUrl += `?search=${encodeURIComponent(searchTerm)}`;
