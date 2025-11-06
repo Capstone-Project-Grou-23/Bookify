@@ -71,7 +71,7 @@ const Sell = () => {
 
         try {
             // ✅ Use the correct /api/books endpoint
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/books', { 
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/books`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
