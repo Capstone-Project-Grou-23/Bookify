@@ -9,8 +9,12 @@ const Profile = () => {
 
     // !! IMPORTANT !!
     // Replace this with your actual Render backend URL
-    const BACKEND_URL = "https://YOUR-BACKEND-URL.onrender.com";
-
+    //const BACKEND_URL = "https://YOUR-BACKEND-URL.onrender.com";
+    // ✅ --- START OF FIX ---
+    // This URL was pointing to a placeholder.
+    // It should point to your local backend.
+    const BACKEND_URL = "http://localhost:5000";
+    // ✅ --- END OF FIX ---
     useEffect(() => {
         const token = localStorage.getItem('token');
         const userData = JSON.parse(localStorage.getItem('user'));
@@ -26,7 +30,12 @@ const Profile = () => {
         fetch(`${BACKEND_URL}/api/users/${userId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         })
-        .then(res => res.json())
+        .then(res => { // ✅ Added error handling
+            if (!res.ok) {
+                throw new Error('Failed to fetch user profile');
+            }
+            return res.json();
+        })
         .then(data => {
             if(!data.error) {
                 setUser(data);
