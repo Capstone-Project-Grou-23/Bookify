@@ -18,8 +18,8 @@ const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
 // 1. DEFINE 'app' FIRST
 const app = express(); 
 
-// 2. SET YOUR VERCEL URL (I removed the trailing / as it's safer)
-const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app/"; 
+// 2. SET YOUR VERCEL URL (NO TRAILING SLASH)
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app"; 
 
 // 3. NOW you can use app.use()
 app.use(cors({
@@ -42,9 +42,9 @@ app.use(session({
 app.use(passport.initialize()); // "Wakes up" passport
 app.use(passport.session());
 
-// --- PROTECTED ROUTES ---
+// --- ROUTES ---
 
-// Get all books (with search and seller_id filters)
+// Get all books (public or filtered)
 app.get('/api/books', (req, res) => {
   // Use LEFT JOIN to prevent errors if a category or user is missing
   let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b LEFT JOIN categories c ON b.category_id = c.id LEFT JOIN users u ON b.seller_id = u.id';
@@ -57,7 +57,7 @@ app.get('/api/books', (req, res) => {
     params.push(req.query.seller_id);
   }
 
-  // Check for search filter (NOW ONLY SEARCHING TITLE)
+  // Check for search filter
   if (req.query.search) {
     whereClauses.push('b.title LIKE ?');
     const searchTerm = `%${req.query.search}%`;
@@ -118,7 +118,7 @@ app.put("/api/users/:id", verifyToken, (req, res) => {
 app.get("/api/users/:id/settings", verifyToken, (req, res) => {
     const userId = req.params.id;
     if (req.user.id !== parseInt(userId)) {
-        return res.status(403).json({ message: "Forbidden" });
+        return res.status(4GE0aZJk-B4(e)3).json({ message: "Forbidden" });
     }
 
     const settingsQuery = "SELECT * FROM user_settings WHERE user_id = ?";
@@ -152,8 +152,6 @@ app.put("/api/users/:id/settings", verifyToken, (req, res) => {
     });
 });
 
-
-// --- PUBLIC ROUTES ---
 
 // Get all categories
 app.get('/api/categories', (req, res) => {
