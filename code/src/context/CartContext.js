@@ -61,6 +61,11 @@ export const CartProvider = ({ children }) => {
       );
     }
   };
+  
+  // ✅ NEW: Function to clear the cart
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
   // Get total price
   const getCartTotal = () => {
@@ -77,7 +82,8 @@ export const CartProvider = ({ children }) => {
     removeFromCart,
     updateQuantity,
     getCartTotal,
-    itemCount
+    itemCount,
+    clearCart // ✅ NEW: Expose the clearCart function
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
