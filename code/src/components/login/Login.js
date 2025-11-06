@@ -1,127 +1,21 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "./Login.css";
+GOOGLE_CLIENT_ID=640439757357-859i57cfd2irun34scgk1eg6b82gdjcm.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback 
+JWT_SECRET=311535g34gd4g3sd43g4sdg4s3d5gs3g4eds4g
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+# Add this new line
+SESSION_SECRET=somereallylongrandomstringforsecuirty12345!
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+# TiDB Cloud Database
+DB_HOST=gateway01.ap-southeast-1.prod.aws.tidbcloud.com
+DB_USER=4Ph9ym76JS5RnGq.root
+DB_PASSWORD=hcGeCQAquCBMCeC3
+DB_PORT=4000
+DB_DATABASE=test
 
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+#backend
+#const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+REACT_APP_BACKEND_URL=??
 
-      const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/");
-      } else {
-        setError(data.message || "Something went wrong");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Server error. Try again later.");
-    }
-  };
-
-  return (
-    <div>
-      {/* Navbar */}
-      <div className="navbar">
-        <div className="logo">
-          <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-            📚 Bookify
-          </Link>
-        </div>
-        <div className="menu">
-          <Link to="/">Home</Link>
-          <li><Link to="/explore">Explore</Link></li>
-          
-        </div>
-        <div className="auth">
-          <Link to="/login" className="btn-login">
-            Log In
-          </Link>
-          <Link to="/signup" className="btn-join">
-            Join for FREE
-          </Link>
-        </div>
-      </div>
-
-      {/* Login Form */}
-      <div className="login-container">
-        <div className="login-box">
-          <h2>Welcome back!</h2>
-          <p>Log in to your account.</p>
-
-          {error && <p style={{ color: "red" }}>{error}</p>}
-
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="email">Username or email</label>
-            <input
-              type="email"
-              id="email"
-              placeholder="example@example.com"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              placeholder="Password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <Link to="#" className="forgot">
-              Forgot your password?
-            </Link>
-
-            <button type="submit" className="login-btn">
-              Log In
-            </button>
-          </form>
-
-          <div className="or">— Or —</div>
-
-          <a
-            href="http://localhost:5000/api/auth/google"
-            className="social-btn"
-            style={{
-              textDecoration: "none",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <img
-              src="https://www.svgrepo.com/show/355037/google.svg"
-              alt="Google"
-            />{" "}
-            Continue with Google
-          </a>
-
-          <div className="signup">
-            Don’t have an account? <Link to="/signup">Sign up</Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Login;
+SENDGRID_API_KEY=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
