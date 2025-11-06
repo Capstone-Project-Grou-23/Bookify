@@ -6,6 +6,10 @@ const passport = require('passport');
 const mysql = require("mysql2");
 const session = require('express-session');
 const cors = require("cors");
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app/"; // <-- Your Vercel app's URL
+app.use(cors({
+  origin: VERCEL_FRONTEND_URL
+}));
 const bodyParser = require("body-parser");
 const authRoutes = require("./auth/auth");
 const verifyToken = require("./auth/verifyToken");
