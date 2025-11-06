@@ -11,17 +11,10 @@ const authRoutes = require("./auth/auth");
 const verifyToken = require("./auth/verifyToken");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app";
 require('./auth/passport-config');
 const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
-
-// 1. DEFINE 'app' FIRST
-const app = express(); 
-
-// 2. SET YOUR VERCEL URL (NO TRAILING SLASH)
-const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app"; 
-
-// 3. NOW you can use app.use()
+const app = express();
 app.use(cors({
   origin: VERCEL_FRONTEND_URL 
 }));
@@ -34,7 +27,7 @@ const db = require("./db");
 // Authentication routes
 app.use("/api/auth", authRoutes);
 app.use(session({
-    secret: process.env.SESSION_SECRET, 
+    secret: process.env.SESSION_SECRET, // You'll add this to .env
     resave: false,
     saveUninitialized: false
 }));
@@ -42,12 +35,13 @@ app.use(session({
 app.use(passport.initialize()); // "Wakes up" passport
 app.use(passport.session());
 
-// --- ROUTES ---
+// --- PROTECTED ROUTES ---
+// All routes below this middleware will require a valid JWT
+// In code/server/index.js
 
-// Get all books (public or filtered)
+// Get all books (with search and seller_id filters)
 app.get('/api/books', (req, res) => {
-  // Use LEFT JOIN to prevent errors if a category or user is missing
-  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b LEFT JOIN categories c ON b.category_id = c.id LEFT JOIN users u ON b.seller_id = u.id';
+  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b JOIN categories c ON b.category_id = c.id JOIN users u ON b.seller_id = u.id';
   const params = [];
   const whereClauses = [];
 
@@ -57,10 +51,12 @@ app.get('/api/books', (req, res) => {
     params.push(req.query.seller_id);
   }
 
-  // Check for search filter
+  // Check for search filter (NOW ONLY SEARCHING TITLE)
   if (req.query.search) {
+    // We removed "OR b.author LIKE ?"
     whereClauses.push('b.title LIKE ?');
     const searchTerm = `%${req.query.search}%`;
+    // We only push the searchTerm once
     params.push(searchTerm);
   }
 
@@ -78,6 +74,7 @@ app.get('/api/books', (req, res) => {
   });
 });
 
+// ✅ --- START OF FIX ---
 // GET User Profile
 app.get("/api/users/:id", verifyToken, (req, res) => {
     const userId = req.params.id;
@@ -98,6 +95,7 @@ app.get("/api/users/:id", verifyToken, (req, res) => {
         res.json(results[0]); // Send back the user data
     });
 });
+// ✅ --- END OF FIX ---
 
 // Update user profile
 app.put("/api/users/:id", verifyToken, (req, res) => {
@@ -118,7 +116,7 @@ app.put("/api/users/:id", verifyToken, (req, res) => {
 app.get("/api/users/:id/settings", verifyToken, (req, res) => {
     const userId = req.params.id;
     if (req.user.id !== parseInt(userId)) {
-        return res.status(4GE0aZJk-B4(e)3).json({ message: "Forbidden" });
+        return res.status(403).json({ message: "Forbidden" });
     }
 
     const settingsQuery = "SELECT * FROM user_settings WHERE user_id = ?";
@@ -150,6 +148,28 @@ app.put("/api/users/:id/settings", verifyToken, (req, res) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true, message: "Settings updated successfully" });
     });
+});
+
+
+// --- PUBLIC ROUTES ---
+
+// Get all books
+app.get('/api/books', (req, res) => {
+  // ✅ Use LEFT JOIN for both categories AND users
+  let sql = 'SELECT b.*, c.name as category_name, u.name as seller_name FROM books b LEFT JOIN categories c ON b.category_id = c.id LEFT JOIN users u ON b.seller_id = u.id';
+  const params = [];
+  if (req.query.seller_id) {
+    sql += ' WHERE b.seller_id = ?';
+    params.push(req.query.seller_id);
+  }
+  db.query(sql, params, (err, results) => {
+    if (err) {
+        // Log the error to the console to see what's wrong
+        console.error("Error fetching books:", err);
+        return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
+  });
 });
 
 
