@@ -183,7 +183,7 @@ const Login = () => {
             <div className="or">— Or —</div>
 
             <a
-              href={${process.env.REACT_APP_BACKEND_URL}/api/auth/google}
+              href={`${process.env.REACT_APP_BACKEND_URL}/api/auth/google`}
               className="social-btn"
               style={{
                 textDecoration: "none",
