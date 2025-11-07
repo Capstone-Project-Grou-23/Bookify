@@ -101,7 +101,7 @@ const Setup2FA = () => {
         e.preventDefault();
         setError('');
         try {
-            const response = await fetch(\${process.env.REACT_APP_BACKEND_URL}/api/auth/2fa/verify-email-setup`, {
+            const response = await fetch(\${process.env.REACT_APP_BACKEND_URL}/api/auth/2fa/verify-email-setup`, 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userId, token: emailToken }),
