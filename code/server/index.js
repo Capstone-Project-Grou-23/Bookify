@@ -1,4 +1,4 @@
-//process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 require('dotenv').config();
 
 const express = require("express");
@@ -19,7 +19,7 @@ const JWT_SECRET = process.env.JWT_SECRET;;
 const app = express(); 
 
 // 2. SET YOUR VERCEL URL (NO TRAILING SLASH)
-const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app/"; 
+const VERCEL_FRONTEND_URL = "https://bookify-beryl.vercel.app"; 
 
 // 3. NOW you can use app.use()
 app.use(cors({
