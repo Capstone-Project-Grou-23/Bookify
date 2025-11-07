@@ -13,7 +13,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 require('./auth/passport-config');
-const JWT_SECRET = "your_super_secret_key_that_is_long_and_secure";
+const JWT_SECRET = process.env.JWT_SECRET;;
 
 // 1. DEFINE 'app' FIRST
 const app = express(); 
