@@ -20,7 +20,8 @@ const Setup2FA = () => {
 
     // ✅ NEW: State for email setup
     const [emailToken, setEmailToken] = useState('');
-    const [emailSent, setEmailSent] = useState(false);
+    // ✅ FIX: Removed unused 'emailSent' state
+    // const [emailSent, setEmailSent] = useState(false);
 
     // If user lands here without state, redirect to signup
     if (!userId || !email) {
@@ -32,7 +33,8 @@ const Setup2FA = () => {
     // 1. Handle "Enable Email" button click
     const handleEnableEmail = async () => {
         setError('');
-        setEmailSent(false);
+        // ✅ FIX: Removed unused state setter
+        // setEmailSent(false); 
         try {
             // ✅ MODIFIED: Call the new 'send' route
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/2fa/send-email-setup`, {
@@ -44,7 +46,8 @@ const Setup2FA = () => {
             if (response.ok) {
                 // ✅ MODIFIED: Go to the email verification view
                 setView('email-verify'); 
-                setEmailSent(true);
+                // ✅ FIX: Removed unused state setter
+                // setEmailSent(true);
             } else {
                 setError(data.message || 'Failed to send email OTP.');
             }
