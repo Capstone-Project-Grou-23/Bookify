@@ -1,8 +1,9 @@
 import React from "react";
 import "./SupportSetting.css";
-import Help from "./support-options/Help";
-import Contact from "./support-options/Contact";
-import About from "./support-options/About";
+// ✅ FIX: Removed unused imports. These are routed in App.js.
+// import Help from "./support-options/Help";
+// import Contact from "./support-options/Contact";
+// import About from "./support-options/About";
 
 
 const SupportSetting = () => {
