@@ -90,7 +90,7 @@ const Navbar = () => {
             <button onClick={toggleTheme} className="dropdown-item">
               {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
             </button>
-            <a href="#">Badges</a>
+            <button className="dropdown-item">Badges</button>
             <a href="/feedback">Give Feedback</a>
             <Link to="/login">Log Out</Link>
           </div>
