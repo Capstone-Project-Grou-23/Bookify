@@ -19,7 +19,7 @@ const JWT_SECRET = process.env.JWT_SECRET;;
 const app = express(); 
 
 // 2. SET YOUR VERCEL URL (NO TRAILING SLASH)
-const VERCEL_FRONTEND_URL = "https://bookify-shivams-projects-a49986c6.vercel.app/"; 
+const VERCEL_FRONTEND_URL = "https://bookify-shivams-projects-a49986c6.vercel.app"; 
 
 // 3. NOW you can use app.use()
 app.use(cors({
