@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Setting.css";
-import { Link } from "react-router-dom";
+// ✅ FIX: Removed unused 'Link' import
+// import { Link } from "react-router-dom"; 
 
 // Import your setting option components
 import ProfileSetting from "./setting-options/ProfileSetting";
