@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react"; // ✅ 1. Import useCallback
 import "./Profile.css";
 
 const Profile = () => {
@@ -15,17 +15,9 @@ const Profile = () => {
     // It should point to your local backend.
     const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
     // ✅ --- END OF FIX ---
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const userData = JSON.parse(localStorage.getItem('user'));
 
-        if (token && userData) {
-            fetchUserProfile(userData.id, token);
-            fetchSellerBooks(userData.id, token);
-        }
-    }, []);
-
-    const fetchUserProfile = (userId, token) => {
+    // ✅ 2. Wrap this function in useCallback
+    const fetchUserProfile = useCallback((userId, token) => {
         // Use the public backend URL
         fetch(`${BACKEND_URL}/api/users/${userId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -43,9 +35,10 @@ const Profile = () => {
             }
         })
         .catch(console.error);
-    };
+    }, [BACKEND_URL]); // Dependency
 
-    const fetchSellerBooks = (sellerId, token) => {
+    // ✅ 3. Wrap this function in useCallback
+    const fetchSellerBooks = useCallback((sellerId, token) => {
         // Use the public backend URL
         fetch(`${BACKEND_URL}/api/books?seller_id=${sellerId}`, {
              headers: { 'Authorization': `Bearer ${token}` }
@@ -55,7 +48,18 @@ const Profile = () => {
            if(!data.error) setSellerBooks(data);
         })
        .catch(console.error);
-    };
+    }, [BACKEND_URL]); // Dependency
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const userData = JSON.parse(localStorage.getItem('user'));
+
+        if (token && userData) {
+            fetchUserProfile(userData.id, token);
+            fetchSellerBooks(userData.id, token);
+        }
+    // ✅ 4. Add the memoized functions to the dependency array
+    }, [fetchUserProfile, fetchSellerBooks]);
     
     const handleInputChange = (e) => {
         const { name, value } = e.target;
